@@ -1,4 +1,8 @@
-ARTIFACT_ID=k8s-backup-lib
+PROJECT_NAME=k8s-backup-lib
+ARTIFACT_ID=k8s-backup-operator-crd
+APPEND_CRD_SUFFIX=false
+IMAGE=cloudogu/${ARTIFACT_ID}:${VERSION}
+
 VERSION=1.5.0
 GOTAG=1.24.1
 MAKEFILES_VERSION=10.2.0
