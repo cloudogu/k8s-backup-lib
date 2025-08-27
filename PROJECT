@@ -6,7 +6,7 @@ domain: cloudogu.com
 layout:
 - go.kubebuilder.io/v4
 projectName: k8s-backup-lib
-repo: github.com/cloudogu/k8s-backuplib
+repo: github.com/cloudogu/k8s-backup-lib
 resources:
 - api:
     crdVersion: v1
