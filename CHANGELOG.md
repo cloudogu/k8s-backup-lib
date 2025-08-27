@@ -6,7 +6,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [v1.5.x] - 2025-08-04
 ### Added
-- Initialize backup-lib
-    - scaffolding, api and cr client added
+- Initalize backup-lib
+  - migrate crd from k8s-backup-operator to lib
