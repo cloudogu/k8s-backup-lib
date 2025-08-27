@@ -20,6 +20,20 @@ include build/make/mocks.mk
 include build/make/k8s-controller.mk
 include build/make/k8s-crd.mk
 
+CRD_BACKUP_SOURCE = ${HELM_CRD_SOURCE_DIR}/templates/k8s.cloudogu.com_backups.yaml
+CRD_RESTORE_SOURCE = ${HELM_CRD_SOURCE_DIR}/templates/k8s.cloudogu.com_restores.yaml
+CRD_SCHEDULE_SOURCE = ${HELM_CRD_SOURCE_DIR}/templates/k8s.cloudogu.com_backupschedules.yaml
+CRD_POST_MANIFEST_TARGETS = crd-add-labels crd-add-backup-labels
+
+.PHONY: crd-add-backup-labels
+crd-add-backup-labels: $(BINARY_YQ)
+	@echo "Adding backup label to CRDs..."
+	@for file in ${HELM_CRD_SOURCE_DIR}/templates/*.yaml ; do \
+		$(BINARY_YQ) -i e ".metadata.labels.\"k8s.cloudogu.com/part-of\" = \"backup\"" $${file} ;\
+	done
+
+
+
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
 
