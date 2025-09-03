@@ -6,7 +6,6 @@ package v1
 
 import (
 	"fmt"
-	"github.com/cloudogu/k8s-backup-lib/pkg/config"
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
@@ -103,9 +102,6 @@ func cronJobPodMeta(namespace string) metav1.ObjectMeta {
 
 func (bs *BackupSchedule) cronJobPodSpec(image string) corev1.PodSpec {
 	pullPolicy := corev1.PullIfNotPresent
-	if config.IsStageDevelopment() {
-		pullPolicy = corev1.PullAlways
-	}
 
 	return corev1.PodSpec{
 		Containers: []corev1.Container{{
