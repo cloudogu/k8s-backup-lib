@@ -6,7 +6,6 @@ package v1
 
 import (
 	"fmt"
-	"github.com/cloudogu/k8s-backup-lib/pkg/config"
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
@@ -81,10 +80,10 @@ func (bs *BackupSchedule) GetStatus() RequeueableStatus {
 	return bs.Status
 }
 
-func (bs *BackupSchedule) CronJobPodTemplate(image string) corev1.PodTemplateSpec {
+func (bs *BackupSchedule) CronJobPodTemplate(image string, pullPolicy corev1.PullPolicy) corev1.PodTemplateSpec {
 	return corev1.PodTemplateSpec{
 		ObjectMeta: cronJobPodMeta(bs.Namespace),
-		Spec:       bs.cronJobPodSpec(image),
+		Spec:       bs.cronJobPodSpec(image, pullPolicy),
 	}
 }
 
@@ -101,12 +100,7 @@ func cronJobPodMeta(namespace string) metav1.ObjectMeta {
 	}
 }
 
-func (bs *BackupSchedule) cronJobPodSpec(image string) corev1.PodSpec {
-	pullPolicy := corev1.PullIfNotPresent
-	if config.IsStageDevelopment() {
-		pullPolicy = corev1.PullAlways
-	}
-
+func (bs *BackupSchedule) cronJobPodSpec(image string, pullPolicy corev1.PullPolicy) corev1.PodSpec {
 	return corev1.PodSpec{
 		Containers: []corev1.Container{{
 			Name:            bs.CronJobName(),

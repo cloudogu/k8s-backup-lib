@@ -1,15 +1,15 @@
 package ecosystem
 
 import (
-	"k8s.io/apimachinery/pkg/runtime"
 	"testing"
+
+	"github.com/cloudogu/k8s-backup-lib/api/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"k8s.io/client-go/rest"
-
-	v1 "github.com/cloudogu/k8s-backup-lib/pkg/api/v1"
 )
 
 func TestNewClientSet(t *testing.T) {

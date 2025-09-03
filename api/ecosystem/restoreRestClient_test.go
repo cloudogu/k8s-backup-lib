@@ -9,14 +9,13 @@ import (
 	"reflect"
 	"testing"
 
+	k8sv1 "github.com/cloudogu/k8s-backup-lib/api/v1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
-
-	k8sv1 "github.com/cloudogu/k8s-backup-lib/pkg/api/v1"
 )
 
 func Test_restoreClient_Get(t *testing.T) {
