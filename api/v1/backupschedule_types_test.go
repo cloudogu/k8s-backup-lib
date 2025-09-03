@@ -88,7 +88,7 @@ func TestBackupSchedule_CronJobPodTemplate(t *testing.T) {
 		}
 
 		// when
-		actual := sut.CronJobPodTemplate("bitnamilegacy/kubectl:1.27.7")
+		actual := sut.CronJobPodTemplate("bitnamilegacy/kubectl:1.27.7", corev1.PullIfNotPresent)
 
 		// then
 		assert.Equal(t, expected, actual)
