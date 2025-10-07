@@ -16,6 +16,7 @@ include build/make/static-analysis.mk
 include build/make/clean.mk
 include build/make/k8s-controller.mk
 include build/make/release.mk
+include build/make/mocks.mk
 
 CRD_BACKUP_SOURCE = ${HELM_CRD_SOURCE_DIR}/templates/k8s.cloudogu.com_backups.yaml
 CRD_RESTORE_SOURCE = ${HELM_CRD_SOURCE_DIR}/templates/k8s.cloudogu.com_restores.yaml
