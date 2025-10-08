@@ -3,7 +3,7 @@ ARTIFACT_ID=k8s-backup-operator-crd
 APPEND_CRD_SUFFIX=false
 IMAGE=cloudogu/${ARTIFACT_ID}:${VERSION}
 
-VERSION=1.6.0
+VERSION=1.7.0
 GOTAG=1.24.1
 MAKEFILES_VERSION=10.2.0
 
@@ -16,6 +16,7 @@ include build/make/static-analysis.mk
 include build/make/clean.mk
 include build/make/k8s-controller.mk
 include build/make/release.mk
+include build/make/mocks.mk
 
 CRD_BACKUP_SOURCE = ${HELM_CRD_SOURCE_DIR}/templates/k8s.cloudogu.com_backups.yaml
 CRD_RESTORE_SOURCE = ${HELM_CRD_SOURCE_DIR}/templates/k8s.cloudogu.com_restores.yaml
