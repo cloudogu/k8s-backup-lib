@@ -4,7 +4,7 @@ APPEND_CRD_SUFFIX=false
 IMAGE=cloudogu/${ARTIFACT_ID}:${VERSION}
 
 VERSION=1.7.0
-GOTAG=1.24.1
+GOTAG=1.26.0
 MAKEFILES_VERSION=10.2.0
 
 include build/make/variables.mk
