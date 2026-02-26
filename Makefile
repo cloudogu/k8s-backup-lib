@@ -3,9 +3,10 @@ ARTIFACT_ID=k8s-backup-operator-crd
 APPEND_CRD_SUFFIX=false
 IMAGE=cloudogu/${ARTIFACT_ID}:${VERSION}
 
-VERSION=1.7.0
-GOTAG=1.24.1
-MAKEFILES_VERSION=10.2.0
+VERSION=1.8.0
+GOTAG=1.26.0
+MAKEFILES_VERSION=10.6.0
+LINT_VERSION=v2.10.1
 
 include build/make/variables.mk
 include build/make/self-update.mk

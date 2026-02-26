@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.8.0] - 2026-02-26
+### Changed
+- [#6] Update go dependencies
+
 ## [v1.7.0] - 2025-10-08
 ### Changed
 - [#4] Update to k8s-io-libs v0.34.1
