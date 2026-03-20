@@ -110,6 +110,8 @@ type RequeuableObject interface {
 	GetStatus() RequeueableStatus
 	// GetName returns the name from the object.
 	GetName() string
+	// GetCreationTimestamp return the creation timestamp from the object.
+	GetCreationTimestamp() metav1.Time
 }
 
 // RequeueableStatus provides functionalities used for an abstract requeueHandler
