@@ -202,6 +202,7 @@ func Test_backupClient_UpdateStatus(t *testing.T) {
 
 			bytes, err := io.ReadAll(request.Body)
 			require.NoError(t, err)
+			assert.Contains(t, string(bytes), `"conditions":[]`)
 
 			createdBackup := &k8sv1.Backup{}
 			require.NoError(t, json.Unmarshal(bytes, createdBackup))

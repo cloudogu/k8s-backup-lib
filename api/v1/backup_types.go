@@ -64,6 +64,16 @@ type BackupStatus struct {
 	StartTimestamp metav1.Time `json:"startTimestamp,omitempty"`
 	// CompletionTimestamp marks the date/time when the backup finished being processed, regardless of any errors.
 	CompletionTimestamp metav1.Time `json:"completionTimestamp,omitempty"`
+	// Conditions represent the latest available observations of the Backup's state.
+	Conditions []metav1.Condition `json:"conditions"`
+}
+
+// EnsureConditions normalizes nil conditions to an empty slice so the field is always serialized as []
+// instead of null or being omitted.
+func (bs *BackupStatus) EnsureConditions() {
+	if bs != nil && bs.Conditions == nil {
+		bs.Conditions = []metav1.Condition{}
+	}
 }
 
 // +kubebuilder:object:root=true

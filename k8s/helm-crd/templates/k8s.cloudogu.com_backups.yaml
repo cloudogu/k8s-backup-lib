@@ -69,6 +69,57 @@ spec:
             status:
               description: Status defines the observed state of Backup
               properties:
+                conditions:
+                  description: Conditions represent the latest available observations
+                    of the Backup's state.
+                  items:
+                    description: Condition contains details for one aspect of the current
+                      state of this API Resource.
+                    properties:
+                      lastTransitionTime:
+                        description: lastTransitionTime is the last time the condition
+                          transitioned from one status to another.
+                        format: date-time
+                        type: string
+                      message:
+                        description: message is a human readable message indicating details
+                          about the transition. This may be an empty string.
+                        maxLength: 32768
+                        type: string
+                      observedGeneration:
+                        description: observedGeneration represents the .metadata.generation
+                          that the condition was set based upon. For instance, if .metadata.generation
+                          is currently 12, but the .status.conditions[x].observedGeneration is 9,
+                          the condition is out of date with respect to the current state
+                          of the instance.
+                        format: int64
+                        minimum: 0
+                        type: integer
+                      reason:
+                        description: reason contains a programmatic identifier indicating
+                          the reason for the condition's last transition.
+                        maxLength: 1024
+                        minLength: 1
+                        type: string
+                      status:
+                        description: status of the condition, one of True, False, Unknown.
+                        enum:
+                          - "True"
+                          - "False"
+                          - Unknown
+                        type: string
+                      type:
+                        description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                        maxLength: 316
+                        type: string
+                    required:
+                      - lastTransitionTime
+                      - message
+                      - reason
+                      - status
+                      - type
+                    type: object
+                  type: array
                 completionTimestamp:
                   description: CompletionTimestamp marks the date/time when the backup finished being processed, regardless of any errors.
                   format: date-time
