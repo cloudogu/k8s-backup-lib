@@ -37,6 +37,11 @@ const (
 	ErrorOnProviderDeleteEventReason = "Error provider delete"
 )
 
+const (
+	ConditionPrepared  = "Prepared"
+	ConditionCompleted = "Completed"
+)
+
 const BackupFinalizer = "cloudogu-backup-finalizer"
 
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
