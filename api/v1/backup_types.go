@@ -40,6 +40,8 @@ const (
 const (
 	ConditionPrepared  = "Prepared"
 	ConditionCompleted = "Completed"
+	ConditionDeleting  = "Deleting"
+	ConditionCanceled  = "Canceled"
 )
 
 const BackupFinalizer = "cloudogu-backup-finalizer"
