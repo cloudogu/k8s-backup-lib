@@ -109,7 +109,6 @@ func (d *backupClient) updateStatusWithRetry(ctx context.Context, backup *v1.Bac
 		// do not overwrite the whole status, so we do not lose other values from the Status object
 		// esp. a potentially set requeue time
 		updatedBackup.Status.Status = targetStatus
-		updatedBackup.Status.EnsureConditions()
 		resultBackup, err = d.UpdateStatus(ctx, updatedBackup, metav1.UpdateOptions{})
 		return err
 	})
@@ -230,7 +229,6 @@ func (d *backupClient) Update(ctx context.Context, backup *v1.Backup, opts metav
 // UpdateStatus was generated because the type contains a Status member.
 // Add a +genclient:noStatus comment above the type to avoid generating UpdateStatus().
 func (d *backupClient) UpdateStatus(ctx context.Context, backup *v1.Backup, opts metav1.UpdateOptions) (result *v1.Backup, err error) {
-	backup.Status.EnsureConditions()
 	result = &v1.Backup{}
 	err = d.client.Put().
 		Namespace(d.ns).
