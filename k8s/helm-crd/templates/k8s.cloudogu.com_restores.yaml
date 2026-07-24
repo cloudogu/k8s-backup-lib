@@ -23,9 +23,25 @@ spec:
           jsonPath: .spec.backupName
           name: Backup name
           type: string
-        - description: The current status of the restore
-          jsonPath: .status.status
-          name: Status
+        - description: Whether the restore is already completed
+          jsonPath: .status.conditions[?(@.type=='Completed')].status
+          name: Completed
+          type: string
+        - description: Whether all preparations for the restore are completed
+          jsonPath: .status.conditions[?(@.type=='Prepared')].status
+          name: Prepared
+          type: string
+        - description: Whether the backup provider finished the restore process
+          jsonPath: .status.conditions[?(@.type=='ProviderRestoreCompleted')].status
+          name: ProviderCompleted
+          type: string
+        - description: Whether the post restore workload operations are completed
+          jsonPath: .status.conditions[?(@.type=='WorkloadsRecovered')].status
+          name: WorkloadsRecovered
+          type: string
+        - description: Whether the backup-resources are synced with the provider after the restore
+          jsonPath: .status.conditions[?(@.type=='BackupsSynchronized')].status
+          name: BackupsSynchronized
           type: string
         - description: The age of the resource
           jsonPath: .metadata.creationTimestamp
@@ -122,6 +138,9 @@ spec:
                       - type
                     type: object
                   type: array
+                  x-kubernetes-list-map-keys:
+                    - type
+                  x-kubernetes-list-type: map
                 requeueTimeNanos:
                   description: RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
                   format: int64
@@ -129,8 +148,6 @@ spec:
                 status:
                   description: Status represents the state of the backup.
                   type: string
-              required:
-                - conditions
               type: object
           type: object
       served: true
