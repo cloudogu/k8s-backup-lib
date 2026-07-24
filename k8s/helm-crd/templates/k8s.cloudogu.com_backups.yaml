@@ -19,10 +19,6 @@ spec:
   scope: Namespaced
   versions:
     - additionalPrinterColumns:
-        - description: The current status of the backup
-          jsonPath: .status.status
-          name: Status
-          type: string
         - description: The completion timestamp of the backup
           jsonPath: .status.completionTimestamp
           name: Completion Timestamp
@@ -31,6 +27,22 @@ spec:
           jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
+        - description: Whether all preparations for the backup are completed
+          jsonPath: .status.conditions[?(@.type=='Prepared')].status
+          name: Prepared
+          type: string
+        - description: Whether the backup is completed
+          jsonPath: .status.conditions[?(@.type=='Completed')].status
+          name: Completed
+          type: string
+        - description: Whether the backup is canceled
+          jsonPath: .status.conditions[?(@.type=='Canceled')].status
+          name: Canceled
+          type: string
+        - description: Whether the backup is deleting
+          jsonPath: .status.conditions[?(@.type=='Canceled')].status
+          name: Deleting
+          type: string
       name: v1
       schema:
         openAPIV3Schema:
@@ -58,6 +70,8 @@ spec:
               properties:
                 provider:
                   description: Provider defines the backup provider which should be used for the backup.
+                  enum:
+                    - velero
                   type: string
                 syncedFromProvider:
                   description: |-
@@ -129,6 +143,9 @@ spec:
                       - type
                     type: object
                   type: array
+                  x-kubernetes-list-map-keys:
+                    - type
+                  x-kubernetes-list-type: map
                 requeueTimeNanos:
                   description: RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
                   format: int64
@@ -140,8 +157,6 @@ spec:
                 status:
                   description: Status represents the state of the backup.
                   type: string
-              required:
-                - conditions
               type: object
           type: object
       served: true
