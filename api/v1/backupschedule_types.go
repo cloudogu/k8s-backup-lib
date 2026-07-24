@@ -39,7 +39,6 @@ type BackupScheduleSpec struct {
 }
 
 // BackupScheduleStatus defines the observed state of BackupSchedule
-// +kubebuilder:object:generate=false
 type BackupScheduleStatus struct {
 	// Status represents the state of the backup.
 	Status string `json:"status,omitempty"`
