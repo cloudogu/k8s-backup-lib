@@ -23,17 +23,17 @@ spec:
           jsonPath: .spec.backupName
           name: Backup name
           type: string
-        - description: Whether the restore is already completed
-          jsonPath: .status.conditions[?(@.type=='Completed')].status
-          name: Completed
+        - description: Whether the restore is already completed successfully. False shows a failure.
+          jsonPath: .status.conditions[?(@.type=='Successful')].status
+          name: Successful
           type: string
         - description: Whether all preparations for the restore are completed
           jsonPath: .status.conditions[?(@.type=='Prepared')].status
           name: Prepared
           type: string
-        - description: Whether the backup provider finished the restore process
-          jsonPath: .status.conditions[?(@.type=='ProviderRestoreCompleted')].status
-          name: ProviderCompleted
+        - description: Whether the backup provider finished the restore process successfully. False shows a failure.
+          jsonPath: .status.conditions[?(@.type=='ProviderRestoreSuccessful')].status
+          name: ProviderSuccessful
           type: string
         - description: Whether the post restore workload operations are completed
           jsonPath: .status.conditions[?(@.type=='WorkloadsRecovered')].status
