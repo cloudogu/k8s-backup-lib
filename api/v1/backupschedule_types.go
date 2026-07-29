@@ -47,7 +47,12 @@ type BackupScheduleStatus struct {
 	// CurrentCronJobImage is the image currently used to create scheduled backups.
 	CurrentCronJobImage string `json:"currentCronJobImage,omitempty"`
 	// Conditions represent the latest available observations of the BackupSchedule's state.
-	Conditions []metav1.Condition `json:"conditions"`
+	// +listType=map
+	// +listMapKey=type
+	// +patchStrategy=merge
+	// +patchMergeKey=type
+	// +optional
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // GetRequeueTimeNanos returns the requeue time in nano seconds.
