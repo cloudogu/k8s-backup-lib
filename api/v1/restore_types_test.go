@@ -11,9 +11,9 @@ import (
 )
 
 func TestRestoreConditionTypes(t *testing.T) {
-	assert.Equal(t, "Completed", ConditionCompleted)
+	assert.Equal(t, "Successful", ConditionSuccessful)
 	assert.Equal(t, "Prepared", ConditionPrepared)
-	assert.Equal(t, "ProviderRestoreCompleted", ConditionProviderRestoreCompleted)
+	assert.Equal(t, "ProviderRestoreSuccessful", ConditionProviderRestoreSuccessful)
 	assert.Equal(t, "WorkloadsRecovered", ConditionWorkloadsRecovered)
 	assert.Equal(t, "BackupsSynchronized", ConditionBackupsSynchronized)
 }
@@ -21,7 +21,7 @@ func TestRestoreConditionTypes(t *testing.T) {
 func TestRestoreStatus_ConditionSerializationRoundTrip(t *testing.T) {
 	expected := RestoreStatus{
 		Conditions: []metav1.Condition{{
-			Type:               ConditionProviderRestoreCompleted,
+			Type:               ConditionProviderRestoreSuccessful,
 			Status:             metav1.ConditionTrue,
 			ObservedGeneration: 7,
 			LastTransitionTime: metav1.NewTime(time.Date(2026, time.July, 23, 12, 0, 0, 0, time.UTC)),
