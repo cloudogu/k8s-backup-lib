@@ -133,8 +133,8 @@ func (d *backupScheduleClient) AddLabels(ctx context.Context, backupSchedule *v1
 	if backupSchedule.Labels == nil {
 		backupSchedule.Labels = make(map[string]string)
 	}
-	backupSchedule.Labels[appLabelKey] = appLabelValueCes
-	backupSchedule.Labels[partOfLabelKey] = partOfLabelValueBackup
+	backupSchedule.Labels[AppLabelKey] = AppLabelValueCes
+	backupSchedule.Labels[PartOfLabelKey] = PartOfLabelValueBackup
 
 	result, err := d.Update(ctx, backupSchedule, metav1.UpdateOptions{})
 	if err != nil {

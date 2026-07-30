@@ -125,8 +125,8 @@ func (d *restoreClient) AddLabels(ctx context.Context, restore *v1.Restore) (*v1
 	if restore.Labels == nil {
 		restore.Labels = make(map[string]string)
 	}
-	restore.Labels[appLabelKey] = appLabelValueCes
-	restore.Labels[partOfLabelKey] = partOfLabelValueBackup
+	restore.Labels[AppLabelKey] = AppLabelValueCes
+	restore.Labels[PartOfLabelKey] = PartOfLabelValueBackup
 
 	result, err := d.Update(ctx, restore, metav1.UpdateOptions{})
 	if err != nil {
