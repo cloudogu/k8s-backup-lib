@@ -42,6 +42,7 @@ const (
 	ConditionCompleted = "Completed"
 	ConditionDeleting  = "Deleting"
 	ConditionCanceled  = "Canceled"
+	ConditionSucceeded = "Succeeded"
 )
 
 const BackupFinalizer = "cloudogu-backup-finalizer"
@@ -87,9 +88,9 @@ type BackupStatus struct {
 // +kubebuilder:printcolumn:name="Completion Timestamp",type="string",JSONPath=".status.completionTimestamp",description="The completion timestamp of the backup"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="The age of the resource"
 // +kubebuilder:printcolumn:name="Prepared",type="string",JSONPath=".status.conditions[?(@.type=='Prepared')].status",description="Whether all preparations for the backup are completed"
-// +kubebuilder:printcolumn:name="Completed",type="string",JSONPath=".status.conditions[?(@.type=='Completed')].status",description="Whether the backup is completed"
+// +kubebuilder:printcolumn:name="Succeeded",type="string",JSONPath=".status.conditions[?(@.type=='Succeeded')].status",description="Whether the backup is completed"
 // +kubebuilder:printcolumn:name="Canceled",type="string",JSONPath=".status.conditions[?(@.type=='Canceled')].status",description="Whether the backup is canceled"
-// +kubebuilder:printcolumn:name="Deleting",type="string",JSONPath=".status.conditions[?(@.type=='Canceled')].status",description="Whether the backup is deleting"
+// +kubebuilder:printcolumn:name="Deleting",type="string",JSONPath=".status.conditions[?(@.type=='Deleting')].status",description="Whether the backup is deleting"
 
 // Backup is the Schema for the backups API
 type Backup struct {
