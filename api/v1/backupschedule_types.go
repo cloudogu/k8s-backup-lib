@@ -12,6 +12,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// Deprecated: use Conditions instead.
 const (
 	BackupScheduleStatusNew      = ""
 	BackupScheduleStatusFailed   = "failed"
@@ -19,6 +20,21 @@ const (
 	BackupScheduleStatusUpdating = "updating"
 	BackupScheduleStatusCreating = "creating"
 	BackupScheduleStatusCreated  = "created"
+)
+
+const (
+	ConditionAccepted = "Accepted"
+	ConditionReady    = "Ready"
+)
+
+const (
+	ReasonValidSpec    = "ValidSpec"
+	ReasonInvalidSpec  = "InvalidSpec"
+	ReasonSynced       = "Synced"
+	ReasonSyncFailed   = "SyncFailed"
+	ReasonDeleting     = "Deleting"
+	ReasonNotEvaluated = "NotEvaluated"
+	ReasonReady        = "Ready"
 )
 
 const BackupScheduleFinalizer = "cloudogu-backup-schedule-finalizer"
