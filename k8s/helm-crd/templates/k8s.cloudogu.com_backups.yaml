@@ -32,15 +32,15 @@ spec:
           name: Prepared
           type: string
         - description: Whether the backup is completed
-          jsonPath: .status.conditions[?(@.type=='Completed')].status
-          name: Completed
+          jsonPath: .status.conditions[?(@.type=='Succeeded')].status
+          name: Succeeded
           type: string
         - description: Whether the backup is canceled
           jsonPath: .status.conditions[?(@.type=='Canceled')].status
           name: Canceled
           type: string
         - description: Whether the backup is deleting
-          jsonPath: .status.conditions[?(@.type=='Canceled')].status
+          jsonPath: .status.conditions[?(@.type=='Deleting')].status
           name: Deleting
           type: string
       name: v1
