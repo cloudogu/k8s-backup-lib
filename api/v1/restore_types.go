@@ -22,7 +22,6 @@ const (
 	ConditionSuccessful                = "Successful"
 	ConditionProviderRestoreSuccessful = "ProviderRestoreSuccessful"
 	ConditionWorkloadsRecovered        = "WorkloadsRecovered"
-	ConditionBackupsSynchronized       = "BackupsSynchronized"
 )
 
 const RestoreFinalizer = "cloudogu-restore-finalizer"

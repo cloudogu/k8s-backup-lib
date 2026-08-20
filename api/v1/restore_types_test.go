@@ -15,7 +15,6 @@ func TestRestoreConditionTypes(t *testing.T) {
 	assert.Equal(t, "Prepared", ConditionPrepared)
 	assert.Equal(t, "ProviderRestoreSuccessful", ConditionProviderRestoreSuccessful)
 	assert.Equal(t, "WorkloadsRecovered", ConditionWorkloadsRecovered)
-	assert.Equal(t, "BackupsSynchronized", ConditionBackupsSynchronized)
 }
 
 func TestRestoreStatus_ConditionSerializationRoundTrip(t *testing.T) {
