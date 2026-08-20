@@ -27,6 +27,7 @@ const (
 	ConditionReady    = "Ready"
 )
 
+// reasons for conditions
 const (
 	ReasonValidSpec    = "ValidSpec"
 	ReasonInvalidSpec  = "InvalidSpec"
@@ -35,6 +36,17 @@ const (
 	ReasonDeleting     = "Deleting"
 	ReasonNotEvaluated = "NotEvaluated"
 	ReasonReady        = "Ready"
+)
+
+// reasons for Kubernetes events
+const (
+	CronJobCreatedEventReason               = "CronJobCreated"
+	CronJobUpdatedEventReason               = "CronJobUpdated"
+	CronJobSynchronizationFailedEventReason = "CronJobSynchronizationFailed"
+	InvalidScheduleEventReason              = "InvalidSchedule"
+	CronJobDeletionRequestedEventReason     = "CronJobDeletionRequested"
+	CronJobDeletionFailedEventReason        = "CronJobDeletionFailed"
+	FinalizerRemovalFailedEventReason       = "FinalizerRemovalFailed"
 )
 
 const BackupScheduleFinalizer = "cloudogu-backup-schedule-finalizer"
