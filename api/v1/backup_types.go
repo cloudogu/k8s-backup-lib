@@ -38,12 +38,14 @@ const (
 	ErrorOnProviderDeleteEventReason = "Error provider delete"
 )
 
+// Succeeded and ProviderSucceeded are tri-state (Unknown = in progress, False = failure, True = success).
+// The others are milestones (False = not yet, True = reached).
 const (
-	ConditionPrepared  = "Prepared"
-	ConditionCompleted = "Completed"
-	ConditionDeleting  = "Deleting"
-	ConditionCanceled  = "Canceled"
-	ConditionSucceeded = "Succeeded"
+	ConditionPrepared          = "Prepared"
+	ConditionDeleting          = "Deleting"
+	ConditionCanceled          = "Canceled"
+	ConditionSucceeded         = "Succeeded"
+	ConditionProviderSucceeded = "ProviderSucceeded"
 )
 
 const BackupFinalizer = "cloudogu-backup-finalizer"
@@ -88,8 +90,9 @@ type BackupStatus struct {
 // +kubebuilder:metadata:labels=app=ces;app.kubernetes.io/name=k8s-backup-operator;k8s.cloudogu.com/part-of=backup
 // +kubebuilder:printcolumn:name="Completion Timestamp",type="string",JSONPath=".status.completionTimestamp",description="The completion timestamp of the backup"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="The age of the resource"
-// +kubebuilder:printcolumn:name="Prepared",type="string",JSONPath=".status.conditions[?(@.type=='Prepared')].status",description="Whether all preparations for the backup are completed"
 // +kubebuilder:printcolumn:name="Succeeded",type="string",JSONPath=".status.conditions[?(@.type=='Succeeded')].status",description="Whether the backup is completed"
+// +kubebuilder:printcolumn:name="Prepared",type="string",JSONPath=".status.conditions[?(@.type=='Prepared')].status",description="Whether all preparations for the backup are completed"
+// +kubebuilder:printcolumn:name="ProviderSucceeded",type="string",JSONPath=".status.conditions[?(@.type=='ProviderSucceeded')].status",description="Whether the provider backup is completed"
 // +kubebuilder:printcolumn:name="Canceled",type="string",JSONPath=".status.conditions[?(@.type=='Canceled')].status",description="Whether the backup is canceled"
 // +kubebuilder:printcolumn:name="Deleting",type="string",JSONPath=".status.conditions[?(@.type=='Deleting')].status",description="Whether the backup is deleting"
 

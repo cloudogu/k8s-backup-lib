@@ -11,16 +11,16 @@ import (
 )
 
 func TestRestoreConditionTypes(t *testing.T) {
-	assert.Equal(t, "Successful", ConditionSuccessful)
+	assert.Equal(t, "Succeeded", ConditionSucceeded)
 	assert.Equal(t, "Prepared", ConditionPrepared)
-	assert.Equal(t, "ProviderRestoreSuccessful", ConditionProviderRestoreSuccessful)
+	assert.Equal(t, "ProviderSucceeded", ConditionProviderSucceeded)
 	assert.Equal(t, "WorkloadsRecovered", ConditionWorkloadsRecovered)
 }
 
 func TestRestoreStatus_ConditionSerializationRoundTrip(t *testing.T) {
 	expected := RestoreStatus{
 		Conditions: []metav1.Condition{{
-			Type:               ConditionProviderRestoreSuccessful,
+			Type:               ConditionProviderSucceeded,
 			Status:             metav1.ConditionTrue,
 			ObservedGeneration: 7,
 			LastTransitionTime: metav1.NewTime(time.Date(2026, time.July, 23, 12, 0, 0, 0, time.UTC)),
@@ -46,7 +46,7 @@ func TestRestore_DeepCopyDoesNotShareConditions(t *testing.T) {
 	original := &Restore{
 		Status: RestoreStatus{
 			Conditions: []metav1.Condition{{
-				Type:    ConditionCompleted,
+				Type:    ConditionSucceeded,
 				Status:  metav1.ConditionFalse,
 				Reason:  "Pending",
 				Message: "Restore is pending.",
