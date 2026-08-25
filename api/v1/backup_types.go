@@ -9,6 +9,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 )
 
+// Deprecated: use Conditions instead.
 const (
 	BackupStatusNew        = ""
 	BackupStatusInProgress = "in progress"
