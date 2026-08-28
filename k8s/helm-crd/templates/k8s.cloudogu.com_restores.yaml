@@ -24,24 +24,20 @@ spec:
           name: Backup name
           type: string
         - description: Whether the restore is already completed successfully. False shows a failure.
-          jsonPath: .status.conditions[?(@.type=='Successful')].status
-          name: Successful
+          jsonPath: .status.conditions[?(@.type=='Succeeded')].status
+          name: Succeeded
           type: string
         - description: Whether all preparations for the restore are completed
           jsonPath: .status.conditions[?(@.type=='Prepared')].status
           name: Prepared
           type: string
         - description: Whether the backup provider finished the restore process successfully. False shows a failure.
-          jsonPath: .status.conditions[?(@.type=='ProviderRestoreSuccessful')].status
-          name: ProviderSuccessful
+          jsonPath: .status.conditions[?(@.type=='ProviderSucceeded')].status
+          name: ProviderSucceeded
           type: string
         - description: Whether the post restore workload operations are completed
           jsonPath: .status.conditions[?(@.type=='WorkloadsRecovered')].status
           name: WorkloadsRecovered
-          type: string
-        - description: Whether the backup-resources are synced with the provider after the restore
-          jsonPath: .status.conditions[?(@.type=='BackupsSynchronized')].status
-          name: BackupsSynchronized
           type: string
         - description: The age of the resource
           jsonPath: .metadata.creationTimestamp

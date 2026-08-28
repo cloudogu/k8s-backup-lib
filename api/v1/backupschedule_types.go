@@ -63,6 +63,7 @@ type BackupScheduleSpec struct {
 	// Schedule is a cron expression defining when to run the backup.
 	Schedule string `json:"schedule,omitempty"`
 	// Provider defines the backup provider which should be used for the scheduled backups.
+	// +kubebuilder:validation:Enum=velero
 	Provider Provider `json:"provider,omitempty"`
 }
 
