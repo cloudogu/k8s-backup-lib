@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - [#9] Add Conditions to Backup, Restore and BackupSchedule
 
-Deprecated:
+### Deprecated:
 - Backup.status.status – use Backup.status.conditions instead
 - Restore.status.status – use Restore.status.conditions instead
 - BackupSchedule.status.status – use BackupSchedule.status.conditions instead
