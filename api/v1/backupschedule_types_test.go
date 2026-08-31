@@ -11,6 +11,22 @@ import (
 
 const testNamespace = "test-ns"
 
+func TestBackupScheduleConditionTypes(t *testing.T) {
+	assert.Equal(t, "Accepted", ConditionAccepted)
+	assert.Equal(t, "Ready", ConditionReady)
+	assert.Equal(t, "Deleting", ConditionDeleting)
+}
+
+func TestBackupScheduleConditionReasons(t *testing.T) {
+	assert.Equal(t, "ValidSpec", ReasonValidSpec)
+	assert.Equal(t, "InvalidSpec", ReasonInvalidSpec)
+	assert.Equal(t, "Synced", ReasonSynced)
+	assert.Equal(t, "SyncFailed", ReasonSyncFailed)
+	assert.Equal(t, "Deleting", ReasonDeleting)
+	assert.Equal(t, "NotEvaluated", ReasonNotEvaluated)
+	assert.Equal(t, "Ready", ReasonReady)
+}
+
 func TestBackupScheduleStatus_GetRequeueTimeNanos(t *testing.T) {
 	// given
 	sut := BackupScheduleStatus{RequeueTimeNanos: 1234}

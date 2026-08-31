@@ -389,3 +389,41 @@ func Test_backupClient_UpdateStatusXXX(t *testing.T) {
 		})
 	}
 }
+
+func Test_backupClient_AddLabels(t *testing.T) {
+	t.Run("success", func(t *testing.T) {
+		// given
+		backup := &k8sv1.Backup{ObjectMeta: v1.ObjectMeta{Name: "tolabel", Namespace: "test"}}
+
+		server := httptest.NewServer(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			assert.Equal(t, http.MethodPut, request.Method)
+			assert.Equal(t, "/apis/k8s.cloudogu.com/v1/namespaces/test/backups/tolabel", request.URL.Path)
+
+			bytes, err := io.ReadAll(request.Body)
+			require.NoError(t, err)
+
+			updatedBackup := &k8sv1.Backup{}
+			require.NoError(t, json.Unmarshal(bytes, updatedBackup))
+
+			writer.Header().Add("content-type", "application/json")
+			_, err = writer.Write(bytes)
+			require.NoError(t, err)
+			writer.WriteHeader(200)
+		}))
+
+		config := rest.Config{
+			Host: server.URL,
+		}
+		client, err := NewForConfig(&config)
+		require.NoError(t, err)
+		dClient := client.Backups("test")
+
+		// when
+		actual, err := dClient.AddLabels(testCtx, backup)
+
+		// then
+		require.NoError(t, err)
+		assert.Equal(t, AppLabelValueCes, actual.Labels[AppLabelKey])
+		assert.Equal(t, PartOfLabelValueBackup, actual.Labels[PartOfLabelKey])
+	})
+}

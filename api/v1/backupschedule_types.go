@@ -12,6 +12,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// Deprecated: use Conditions instead.
 const (
 	BackupScheduleStatusNew      = ""
 	BackupScheduleStatusFailed   = "failed"
@@ -19,6 +20,33 @@ const (
 	BackupScheduleStatusUpdating = "updating"
 	BackupScheduleStatusCreating = "creating"
 	BackupScheduleStatusCreated  = "created"
+)
+
+const (
+	ConditionAccepted = "Accepted"
+	ConditionReady    = "Ready"
+)
+
+// reasons for conditions
+const (
+	ReasonValidSpec    = "ValidSpec"
+	ReasonInvalidSpec  = "InvalidSpec"
+	ReasonSynced       = "Synced"
+	ReasonSyncFailed   = "SyncFailed"
+	ReasonDeleting     = "Deleting"
+	ReasonNotEvaluated = "NotEvaluated"
+	ReasonReady        = "Ready"
+)
+
+// reasons for Kubernetes events
+const (
+	CronJobCreatedEventReason               = "CronJobCreated"
+	CronJobUpdatedEventReason               = "CronJobUpdated"
+	CronJobSynchronizationFailedEventReason = "CronJobSynchronizationFailed"
+	InvalidScheduleEventReason              = "InvalidSchedule"
+	CronJobDeletionRequestedEventReason     = "CronJobDeletionRequested"
+	CronJobDeletionFailedEventReason        = "CronJobDeletionFailed"
+	FinalizerRemovalFailedEventReason       = "FinalizerRemovalFailed"
 )
 
 const BackupScheduleFinalizer = "cloudogu-backup-schedule-finalizer"
@@ -35,11 +63,11 @@ type BackupScheduleSpec struct {
 	// Schedule is a cron expression defining when to run the backup.
 	Schedule string `json:"schedule,omitempty"`
 	// Provider defines the backup provider which should be used for the scheduled backups.
+	// +kubebuilder:validation:Enum=velero
 	Provider Provider `json:"provider,omitempty"`
 }
 
 // BackupScheduleStatus defines the observed state of BackupSchedule
-// +kubebuilder:object:generate=false
 type BackupScheduleStatus struct {
 	// Status represents the state of the backup.
 	Status string `json:"status,omitempty"`
@@ -47,6 +75,13 @@ type BackupScheduleStatus struct {
 	RequeueTimeNanos time.Duration `json:"requeueTimeNanos,omitempty"`
 	// CurrentCronJobImage is the image currently used to create scheduled backups.
 	CurrentCronJobImage string `json:"currentCronJobImage,omitempty"`
+	// Conditions represent the latest available observations of the BackupSchedule's state.
+	// +listType=map
+	// +listMapKey=type
+	// +patchStrategy=merge
+	// +patchMergeKey=type
+	// +optional
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // GetRequeueTimeNanos returns the requeue time in nano seconds.
@@ -63,7 +98,8 @@ func (bss BackupScheduleStatus) GetStatus() string {
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:shortName="bs"
 // +kubebuilder:printcolumn:name="Schedule",type="string",JSONPath=".spec.schedule",description="The cron schedule for the backup schedule"
-// +kubebuilder:printcolumn:name="Status",type="string",JSONPath=".status.status",description="The current status of the backup schedule"
+// +kubebuilder:printcolumn:name="Ready",type="string",JSONPath=".status.conditions[?(@.type=='Ready')].status",description="Whether the schedule is acitve"
+// +kubebuilder:printcolumn:name="Accepted",type="string",JSONPath=".status.conditions[?(@.type=='Accepted')].status",description="Whether the schedule is successfully verified"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="The age of the resource"
 
 // BackupSchedule is the Schema for the backupschedules API
