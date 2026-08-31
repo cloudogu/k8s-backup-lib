@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.9.0] - 2026-08-31
+### Changed
+- [#9] Add Conditions to Backup, Restore and BackupSchedule
+
+### Deprecated:
+- Backup.status.status – use Backup.status.conditions instead
+- Restore.status.status – use Restore.status.conditions instead
+- BackupSchedule.status.status – use BackupSchedule.status.conditions instead
+
 ## [v1.8.0] - 2026-02-26
 ### Changed
 - [#6] Update go dependencies

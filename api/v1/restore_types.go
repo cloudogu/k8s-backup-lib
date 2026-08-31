@@ -7,12 +7,17 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// Deprecated: use Conditions instead.
 const (
 	RestoreStatusNew        = ""
 	RestoreStatusInProgress = "in progress"
 	RestoreStatusFailed     = "failed"
 	RestoreStatusCompleted  = "completed"
 	RestoreStatusDeleting   = "deleting"
+)
+
+const (
+	ConditionWorkloadsRecovered = "WorkloadsRecovered"
 )
 
 const RestoreFinalizer = "cloudogu-restore-finalizer"
@@ -24,23 +29,33 @@ type RestoreSpec struct {
 	// BackupName references the backup that should be restored.
 	BackupName string `json:"backupName,omitempty"`
 	// Provider defines the backup provider which should be used for the restore.
+	// +kubebuilder:validation:Enum=velero
 	Provider Provider `json:"provider,omitempty"`
 }
 
 // RestoreStatus defines the observed state of Restore
-// +kubebuilder:object:generate=false
 type RestoreStatus struct {
 	// Status represents the state of the backup.
 	Status string `json:"status,omitempty"`
 	// RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
 	RequeueTimeNanos time.Duration `json:"requeueTimeNanos,omitempty"`
+	// Conditions represent the latest available observations of the Restore's state.
+	// +listType=map
+	// +listMapKey=type
+	// +patchStrategy=merge
+	// +patchMergeKey=type
+	// +optional
+	Conditions []metav1.Condition `json:"conditions,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels=app=ces;app.kubernetes.io/name=k8s-backup-operator;k8s.cloudogu.com/part-of=backup
 // +kubebuilder:printcolumn:name="Backup name",type="string",JSONPath=".spec.backupName",description="The backup name for the restore"
-// +kubebuilder:printcolumn:name="Status",type="string",JSONPath=".status.status",description="The current status of the restore"
+// +kubebuilder:printcolumn:name="Succeeded",type="string",JSONPath=".status.conditions[?(@.type=='Succeeded')].status",description="Whether the restore is already completed successfully. False shows a failure."
+// +kubebuilder:printcolumn:name="Prepared",type="string",JSONPath=".status.conditions[?(@.type=='Prepared')].status",description="Whether all preparations for the restore are completed"
+// +kubebuilder:printcolumn:name="ProviderSucceeded",type="string",JSONPath=".status.conditions[?(@.type=='ProviderSucceeded')].status",description="Whether the backup provider finished the restore process successfully. False shows a failure."
+// +kubebuilder:printcolumn:name="WorkloadsRecovered",type="string",JSONPath=".status.conditions[?(@.type=='WorkloadsRecovered')].status",description="Whether the post restore workload operations are completed"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="The age of the resource"
 
 // Restore is the Schema for the restores API

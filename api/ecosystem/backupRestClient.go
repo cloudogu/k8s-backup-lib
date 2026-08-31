@@ -17,10 +17,10 @@ import (
 )
 
 const (
-	appLabelKey            = "app"
-	appLabelValueCes       = "ces"
-	partOfLabelKey         = "k8s.cloudogu.com/part-of"
-	partOfLabelValueBackup = "backup"
+	AppLabelKey            = "app"
+	AppLabelValueCes       = "ces"
+	PartOfLabelKey         = "k8s.cloudogu.com/part-of"
+	PartOfLabelValueBackup = "backup"
 )
 
 type BackupInterface interface {
@@ -132,8 +132,8 @@ func (d *backupClient) AddLabels(ctx context.Context, backup *v1.Backup) (*v1.Ba
 	if backup.Labels == nil {
 		backup.Labels = make(map[string]string)
 	}
-	backup.Labels[appLabelKey] = appLabelValueCes
-	backup.Labels[partOfLabelKey] = partOfLabelValueBackup
+	backup.Labels[AppLabelKey] = AppLabelValueCes
+	backup.Labels[PartOfLabelKey] = PartOfLabelValueBackup
 
 	result, err := d.Update(ctx, backup, metav1.UpdateOptions{})
 	if err != nil {

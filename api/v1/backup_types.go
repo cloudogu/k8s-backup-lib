@@ -9,6 +9,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 )
 
+// Deprecated: use Conditions instead.
 const (
 	BackupStatusNew        = ""
 	BackupStatusInProgress = "in progress"
@@ -37,6 +38,16 @@ const (
 	ErrorOnProviderDeleteEventReason = "Error provider delete"
 )
 
+// Succeeded and ProviderSucceeded are tri-state (Unknown = in progress, False = failure, True = success).
+// The others are milestones (False = not yet, True = reached).
+const (
+	ConditionPrepared          = "Prepared"
+	ConditionDeleting          = "Deleting"
+	ConditionCanceled          = "Canceled"
+	ConditionSucceeded         = "Succeeded"
+	ConditionProviderSucceeded = "ProviderSucceeded"
+)
+
 const BackupFinalizer = "cloudogu-backup-finalizer"
 
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
@@ -47,6 +58,7 @@ type BackupSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Provider defines the backup provider which should be used for the backup.
+	// +kubebuilder:validation:Enum=velero
 	Provider Provider `json:"provider,omitempty"`
 	// SyncedFromProvider defines that this backup already exists in the provider and its status should be synced.
 	// This is necessary because we cannot set the status of a backup on creation, see:
@@ -64,14 +76,25 @@ type BackupStatus struct {
 	StartTimestamp metav1.Time `json:"startTimestamp,omitempty"`
 	// CompletionTimestamp marks the date/time when the backup finished being processed, regardless of any errors.
 	CompletionTimestamp metav1.Time `json:"completionTimestamp,omitempty"`
+	// Conditions represent the latest available observations of the Backup's state.
+	// +listType=map
+	// +listMapKey=type
+	// +patchStrategy=merge
+	// +patchMergeKey=type
+	// +optional
+	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels=app=ces;app.kubernetes.io/name=k8s-backup-operator;k8s.cloudogu.com/part-of=backup
-// +kubebuilder:printcolumn:name="Status",type="string",JSONPath=".status.status",description="The current status of the backup"
 // +kubebuilder:printcolumn:name="Completion Timestamp",type="string",JSONPath=".status.completionTimestamp",description="The completion timestamp of the backup"
 // +kubebuilder:printcolumn:name="Age",type="date",JSONPath=".metadata.creationTimestamp",description="The age of the resource"
+// +kubebuilder:printcolumn:name="Succeeded",type="string",JSONPath=".status.conditions[?(@.type=='Succeeded')].status",description="Whether the backup is completed"
+// +kubebuilder:printcolumn:name="Prepared",type="string",JSONPath=".status.conditions[?(@.type=='Prepared')].status",description="Whether all preparations for the backup are completed"
+// +kubebuilder:printcolumn:name="ProviderSucceeded",type="string",JSONPath=".status.conditions[?(@.type=='ProviderSucceeded')].status",description="Whether the provider backup is completed"
+// +kubebuilder:printcolumn:name="Canceled",type="string",JSONPath=".status.conditions[?(@.type=='Canceled')].status",description="Whether the backup is canceled"
+// +kubebuilder:printcolumn:name="Deleting",type="string",JSONPath=".status.conditions[?(@.type=='Deleting')].status",description="Whether the backup is deleting"
 
 // Backup is the Schema for the backups API
 type Backup struct {
