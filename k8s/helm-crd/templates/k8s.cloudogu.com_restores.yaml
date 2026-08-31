@@ -73,6 +73,8 @@ spec:
                   type: string
                 provider:
                   description: Provider defines the backup provider which should be used for the restore.
+                  enum:
+                    - velero
                   type: string
               type: object
             status:
