@@ -21,9 +21,13 @@ spec:
       jsonPath: .spec.schedule
       name: Schedule
       type: string
-    - description: The current status of the backup schedule
-      jsonPath: .status.status
-      name: Status
+    - description: Whether the schedule is acitve
+      jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: Ready
+      type: string
+    - description: Whether the schedule is successfully verified
+      jsonPath: .status.conditions[?(@.type=='Accepted')].status
+      name: Accepted
       type: string
     - description: The age of the resource
       jsonPath: .metadata.creationTimestamp
