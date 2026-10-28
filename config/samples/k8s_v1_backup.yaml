@@ -10,3 +10,12 @@ metadata:
   name: backup-sample
 spec:
   provider: velero
+  excludedDogus:
+    - redmine
+  excludedComponents:
+    - k8s-prometheus
+  options:
+    ignoreGlobalConfig: false
+    ignoreV2Dogus: false
+    ignoreMisc: true
+    failureMode: partiallyAllowed
