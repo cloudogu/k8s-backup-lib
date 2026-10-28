@@ -47,6 +47,10 @@ spec:
           jsonPath: .status.conditions[?(@.type=='Deleting')].status
           name: Deleting
           type: string
+        - description: Whether the backup contains the whole system
+          jsonPath: .status.backupCoverage
+          name: Coverage
+          type: string
       name: v1
       schema:
         openAPIV3Schema:
@@ -72,6 +76,45 @@ spec:
             spec:
               description: Spec defines the desired state of Backup
               properties:
+                excludedComponents:
+                  description: ExcludedComponents contains the names of components whose resources are not backed up.
+                  items:
+                    maxLength: 63
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  maxItems: 256
+                  type: array
+                  x-kubernetes-list-type: set
+                excludedDogus:
+                  description: |-
+                    ExcludedDogus contains the names of V3 dogus which are not backed up.
+                    V2 dogus can only be excluded as a whole with Options.IgnoreV2Dogus.
+                  items:
+                    maxLength: 63
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  maxItems: 256
+                  type: array
+                  x-kubernetes-list-type: set
+                options:
+                  description: Options defines which units are backed up and how failed units are handled.
+                  properties:
+                    failureMode:
+                      description: FailureMode defines how failed units are handled.
+                      enum:
+                        - failfast
+                        - partiallyAllowed
+                      type: string
+                    ignoreGlobalConfig:
+                      description: IgnoreGlobalConfig excludes the global-config unit.
+                      type: boolean
+                    ignoreMisc:
+                      description: IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
+                      type: boolean
+                    ignoreV2Dogus:
+                      description: IgnoreV2Dogus excludes the unit containing all V2 dogus.
+                      type: boolean
+                  type: object
                 provider:
                   description: Provider defines the backup provider which should be used for the backup.
                   enum:
@@ -84,13 +127,46 @@ spec:
                     https://stackoverflow.com/questions/73574615/how-to-create-kubernetes-objects-with-status-fields
                   type: boolean
               type: object
+              x-kubernetes-validations:
+                - message: spec is immutable
+                  rule: self == oldSelf
             status:
               description: Status defines the observed state of Backup
               properties:
+                backupCoverage:
+                  description: BackupCoverage defines whether the backup contains the whole system.
+                  enum:
+                    - full
+                    - partial
+                  type: string
+                blueprintId:
+                  description: |-
+                    BlueprintID contains the ID of the blueprint which was installed at the time of the backup.
+                    It is empty if no blueprint was installed.
+                  type: string
                 completionTimestamp:
                   description: CompletionTimestamp marks the date/time when the backup finished being processed, regardless of any errors.
                   format: date-time
                   type: string
+                components:
+                  description: Components contains the components at the time of the backup.
+                  items:
+                    description: ComponentStatus describes a component at the time of the backup.
+                    properties:
+                      name:
+                        description: Name of the component.
+                        type: string
+                      version:
+                        description: Version of the component.
+                        type: string
+                    required:
+                      - name
+                      - version
+                    type: object
+                  type: array
+                  x-kubernetes-list-map-keys:
+                    - name
+                  x-kubernetes-list-type: map
                 conditions:
                   description: Conditions represent the latest available observations of the Backup's state.
                   items:
@@ -150,6 +226,90 @@ spec:
                   x-kubernetes-list-map-keys:
                     - type
                   x-kubernetes-list-type: map
+                dogus:
+                  description: Dogus describes the units of the V3 dogus.
+                  items:
+                    description: DoguUnitStatus describes the unit of a single V3 dogu.
+                    properties:
+                      name:
+                        description: Name of the dogu without namespace.
+                        type: string
+                      providerRef:
+                        description: ProviderRef references the provider backup of the unit.
+                        properties:
+                          name:
+                            description: Name of the provider object.
+                            type: string
+                        required:
+                          - name
+                        type: object
+                      version:
+                        description: Version of the dogu.
+                        type: string
+                    required:
+                      - name
+                      - providerRef
+                      - version
+                    type: object
+                  type: array
+                  x-kubernetes-list-map-keys:
+                    - name
+                  x-kubernetes-list-type: map
+                failedUnits:
+                  description: FailedUnits contains the units whose provider backup failed.
+                  items:
+                    description: FailedUnit describes a unit whose provider operation failed.
+                    properties:
+                      name:
+                        description: Name of the dogu. Only set for units of type dogu.
+                        type: string
+                      providerRef:
+                        description: ProviderRef references the failed provider object.
+                        properties:
+                          name:
+                            description: Name of the provider object.
+                            type: string
+                        required:
+                          - name
+                        type: object
+                      type:
+                        description: Type of the unit.
+                        type: string
+                    required:
+                      - providerRef
+                      - type
+                    type: object
+                  type: array
+                globalConfig:
+                  description: GlobalConfig describes the global-config unit.
+                  properties:
+                    providerRef:
+                      description: ProviderRef references the provider backup of the unit.
+                      properties:
+                        name:
+                          description: Name of the provider object.
+                          type: string
+                      required:
+                        - name
+                      type: object
+                  required:
+                    - providerRef
+                  type: object
+                misc:
+                  description: Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
+                  properties:
+                    providerRef:
+                      description: ProviderRef references the provider backup of the unit.
+                      properties:
+                        name:
+                          description: Name of the provider object.
+                          type: string
+                      required:
+                        - name
+                      type: object
+                  required:
+                    - providerRef
+                  type: object
                 requeueTimeNanos:
                   description: RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
                   format: int64
@@ -161,6 +321,40 @@ spec:
                 status:
                   description: Status represents the state of the backup.
                   type: string
+                v2Dogus:
+                  description: V2Dogus describes the unit containing all V2 dogus.
+                  properties:
+                    dogus:
+                      description: Dogus contains all V2 dogus with their versions in this unit.
+                      items:
+                        description: DoguVersion identifies a dogu in a specific version.
+                        properties:
+                          name:
+                            description: Name of the dogu without namespace.
+                            type: string
+                          version:
+                            description: Version of the dogu.
+                            type: string
+                        required:
+                          - name
+                          - version
+                        type: object
+                      type: array
+                      x-kubernetes-list-map-keys:
+                        - name
+                      x-kubernetes-list-type: map
+                    providerRef:
+                      description: ProviderRef references the provider backup of the unit.
+                      properties:
+                        name:
+                          description: Name of the provider object.
+                          type: string
+                      required:
+                        - name
+                      type: object
+                  required:
+                    - providerRef
+                  type: object
               type: object
           type: object
       served: true

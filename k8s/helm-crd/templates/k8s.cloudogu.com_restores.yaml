@@ -71,12 +71,54 @@ spec:
                 backupName:
                   description: BackupName references the backup that should be restored.
                   type: string
+                excludedComponents:
+                  description: ExcludedComponents contains the names of components whose resources are not restored.
+                  items:
+                    maxLength: 63
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  maxItems: 256
+                  type: array
+                  x-kubernetes-list-type: set
+                excludedDogus:
+                  description: |-
+                    ExcludedDogus contains the names of V3 dogus which are not restored.
+                    V2 dogus can only be excluded as a whole with Options.IgnoreV2Dogus.
+                  items:
+                    maxLength: 63
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  maxItems: 256
+                  type: array
+                  x-kubernetes-list-type: set
+                options:
+                  description: Options defines which units are restored and how failed units are handled.
+                  properties:
+                    failureMode:
+                      description: FailureMode defines how failed units are handled.
+                      enum:
+                        - failfast
+                        - partiallyAllowed
+                      type: string
+                    ignoreGlobalConfig:
+                      description: IgnoreGlobalConfig excludes the global-config unit.
+                      type: boolean
+                    ignoreMisc:
+                      description: IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
+                      type: boolean
+                    ignoreV2Dogus:
+                      description: IgnoreV2Dogus excludes the unit containing all V2 dogus.
+                      type: boolean
+                  type: object
                 provider:
                   description: Provider defines the backup provider which should be used for the restore.
                   enum:
                     - velero
                   type: string
               type: object
+              x-kubernetes-validations:
+                - message: spec is immutable
+                  rule: self == oldSelf
             status:
               description: Status defines the observed state of Restore
               properties:
@@ -139,6 +181,31 @@ spec:
                   x-kubernetes-list-map-keys:
                     - type
                   x-kubernetes-list-type: map
+                failedUnits:
+                  description: FailedUnits contains the units whose provider restore failed. ProviderRef references the provider restore.
+                  items:
+                    description: FailedUnit describes a unit whose provider operation failed.
+                    properties:
+                      name:
+                        description: Name of the dogu. Only set for units of type dogu.
+                        type: string
+                      providerRef:
+                        description: ProviderRef references the failed provider object.
+                        properties:
+                          name:
+                            description: Name of the provider object.
+                            type: string
+                        required:
+                          - name
+                        type: object
+                      type:
+                        description: Type of the unit.
+                        type: string
+                    required:
+                      - providerRef
+                      - type
+                    type: object
+                  type: array
                 requeueTimeNanos:
                   description: RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
                   format: int64
