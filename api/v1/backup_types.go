@@ -64,6 +64,24 @@ type BackupSpec struct {
 	// This is necessary because we cannot set the status of a backup on creation, see:
 	// https://stackoverflow.com/questions/73574615/how-to-create-kubernetes-objects-with-status-fields
 	SyncedFromProvider bool `json:"syncedFromProvider,omitempty"`
+	// ExcludedDogus contains the names of V3 dogus which are not backed up.
+	// V2 dogus can only be excluded as a whole with Options.IgnoreV2Dogus.
+	// +listType=set
+	// +kubebuilder:validation:MaxItems=256
+	// +kubebuilder:validation:items:MaxLength=63
+	// +kubebuilder:validation:items:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+	// +optional
+	ExcludedDogus []string `json:"excludedDogus,omitempty"`
+	// ExcludedComponents contains the names of components whose resources are not backed up.
+	// +listType=set
+	// +kubebuilder:validation:MaxItems=256
+	// +kubebuilder:validation:items:MaxLength=63
+	// +kubebuilder:validation:items:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+	// +optional
+	ExcludedComponents []string `json:"excludedComponents,omitempty"`
+	// Options defines which units are backed up and how failed units are handled.
+	// +optional
+	Options UnitOptions `json:"options,omitempty"`
 }
 
 // BackupStatus defines the observed state of Backup
@@ -83,6 +101,36 @@ type BackupStatus struct {
 	// +patchMergeKey=type
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type"`
+	// BackupCoverage defines whether the backup contains the whole system.
+	// +kubebuilder:validation:Enum=full;partial
+	// +optional
+	BackupCoverage BackupCoverage `json:"backupCoverage,omitempty"`
+	// BlueprintID contains the ID of the blueprint which was installed at the time of the backup.
+	// It is empty if no blueprint was installed.
+	// +optional
+	BlueprintID string `json:"blueprintId,omitempty"`
+	// GlobalConfig describes the global-config unit.
+	// +optional
+	GlobalConfig *UnitStatus `json:"globalConfig,omitempty"`
+	// V2Dogus describes the unit containing all V2 dogus.
+	// +optional
+	V2Dogus *V2DogusUnitStatus `json:"v2Dogus,omitempty"`
+	// Dogus describes the units of the V3 dogus.
+	// +listType=map
+	// +listMapKey=name
+	// +optional
+	Dogus []DoguUnitStatus `json:"dogus,omitempty"`
+	// Components contains the components at the time of the backup.
+	// +listType=map
+	// +listMapKey=name
+	// +optional
+	Components []ComponentStatus `json:"components,omitempty"`
+	// Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
+	// +optional
+	Misc *UnitStatus `json:"misc,omitempty"`
+	// FailedUnits contains the units whose provider backup failed.
+	// +optional
+	FailedUnits []FailedUnit `json:"failedUnits,omitempty"`
 }
 
 // +kubebuilder:object:root=true
@@ -95,6 +143,7 @@ type BackupStatus struct {
 // +kubebuilder:printcolumn:name="ProviderSucceeded",type="string",JSONPath=".status.conditions[?(@.type=='ProviderSucceeded')].status",description="Whether the provider backup is completed"
 // +kubebuilder:printcolumn:name="Canceled",type="string",JSONPath=".status.conditions[?(@.type=='Canceled')].status",description="Whether the backup is canceled"
 // +kubebuilder:printcolumn:name="Deleting",type="string",JSONPath=".status.conditions[?(@.type=='Deleting')].status",description="Whether the backup is deleting"
+// +kubebuilder:printcolumn:name="Coverage",type="string",JSONPath=".status.backupCoverage",description="Whether the backup contains the whole system"
 
 // Backup is the Schema for the backups API
 type Backup struct {
@@ -102,6 +151,7 @@ type Backup struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// Spec defines the desired state of Backup
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="spec is immutable"
 	Spec BackupSpec `json:"spec,omitempty"`
 	// Status defines the observed state of Backup
 	Status BackupStatus `json:"status,omitempty"`
