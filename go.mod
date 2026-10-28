@@ -1,6 +1,6 @@
 module github.com/cloudogu/k8s-backup-lib
 
-go 1.26.0
+go 1.27.3
 
 require (
 	github.com/cloudogu/retry-lib v0.1.0
