@@ -72,6 +72,7 @@ type UnitOptions struct {
 	IgnoreMisc bool `json:"ignoreMisc,omitempty"`
 	// FailureMode defines how failed units are handled.
 	// +kubebuilder:validation:Enum=failfast;partiallyAllowed
+	// +kubebuilder:default=partiallyAllowed
 	FailureMode FailureMode `json:"failureMode,omitempty"`
 }
 
