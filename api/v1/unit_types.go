@@ -26,6 +26,11 @@ const (
 	InstalledDogusV2AnnotationKey = "k8s.cloudogu.com/backup-installed-dogus-v2"
 	// BlueprintIDAnnotationKey contains the ID of the blueprint which was installed at the time of the backup.
 	BlueprintIDAnnotationKey = "backup.cloudogu.com/blueprintId"
+	// UnitsAnnotationKey contains the serialized list of all expected units of the Cloudogu backup.
+	// It is used to detect missing units when the Cloudogu backup is reconstructed from the provider backups.
+	UnitsAnnotationKey = "k8s.cloudogu.com/backup-units"
+	// FailureModeAnnotationKey contains the FailureMode of the Cloudogu backup.
+	FailureModeAnnotationKey = "k8s.cloudogu.com/backup-failure-mode"
 )
 
 // UnitType defines the type of backup unit. Each unit is backed up by its own provider backup.
@@ -74,6 +79,15 @@ type UnitOptions struct {
 	// +kubebuilder:validation:Enum=failfast;partiallyAllowed
 	// +kubebuilder:default=partiallyAllowed
 	FailureMode FailureMode `json:"failureMode,omitempty"`
+}
+
+// UnitIdentifier identifies a unit of a Cloudogu backup. A list of it is serialized into UnitsAnnotationKey.
+type UnitIdentifier struct {
+	// Type of the unit.
+	Type UnitType `json:"type"`
+	// Name of the dogu. Only set for units of type dogu.
+	// +optional
+	Name string `json:"name,omitempty"`
 }
 
 // ProviderRef references the object of the backup provider (e.g. a Velero backup or restore).

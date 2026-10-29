@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - unit status (`globalConfig`, `v2Dogus`, `dogus`, `components`, `misc`, `failedUnits`), `backupCoverage` and `blueprintId` in the Backup status
   - `failedUnits` in the Restore status
   - shared constants for unit types and label/annotation keys of provider backups and restores
+  - `UnitIdentifier` for the serialized list of expected units on provider backups
   - spec of Backup and Restore is immutable
 - [#12] Server side applyconfigurations
 
