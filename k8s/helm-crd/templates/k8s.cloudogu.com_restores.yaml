@@ -95,6 +95,7 @@ spec:
                   description: Options defines which units are restored and how failed units are handled.
                   properties:
                     failureMode:
+                      default: partiallyAllowed
                       description: FailureMode defines how failed units are handled.
                       enum:
                         - failfast
