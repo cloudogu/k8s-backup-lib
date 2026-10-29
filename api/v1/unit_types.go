@@ -39,7 +39,7 @@ type UnitType string
 const (
 	// UnitTypeDogu contains all resources of a single V3 dogu.
 	UnitTypeDogu UnitType = "dogu"
-	// UnitTypeDoguV2 contains all V2 dogus including the global config.
+	// UnitTypeDoguV2 contains all V2 dogus.
 	UnitTypeDoguV2 UnitType = "doguv2"
 	// UnitTypeGlobalConfig contains the global config.
 	UnitTypeGlobalConfig UnitType = "global-config"
