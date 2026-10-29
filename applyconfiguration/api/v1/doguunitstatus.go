@@ -5,11 +5,15 @@ This file was generated with "make generate-deepcopy".
 
 package v1
 
+import (
+	apiv1 "github.com/cloudogu/k8s-backup-lib/api/v1"
+)
+
 // DoguUnitStatusApplyConfiguration represents a declarative configuration of the DoguUnitStatus type for use
 // with apply.
 type DoguUnitStatusApplyConfiguration struct {
 	DoguVersionApplyConfiguration `json:",inline"`
-	ProviderRef                   *ProviderRefApplyConfiguration `json:"providerRef,omitempty"`
+	UnitStatusApplyConfiguration  `json:",inline"`
 }
 
 // DoguUnitStatusApplyConfiguration constructs a declarative configuration of the DoguUnitStatus type for use with
@@ -34,10 +38,34 @@ func (b *DoguUnitStatusApplyConfiguration) WithVersion(value string) *DoguUnitSt
 	return b
 }
 
+// WithState sets the State field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the State field is set to the value of the last call.
+func (b *DoguUnitStatusApplyConfiguration) WithState(value apiv1.UnitState) *DoguUnitStatusApplyConfiguration {
+	b.UnitStatusApplyConfiguration.State = &value
+	return b
+}
+
+// WithReason sets the Reason field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Reason field is set to the value of the last call.
+func (b *DoguUnitStatusApplyConfiguration) WithReason(value string) *DoguUnitStatusApplyConfiguration {
+	b.UnitStatusApplyConfiguration.Reason = &value
+	return b
+}
+
+// WithMessage sets the Message field in the declarative configuration to the given value
+// and returns the receiver, so that objects can be built by chaining "With" function invocations.
+// If called multiple times, the Message field is set to the value of the last call.
+func (b *DoguUnitStatusApplyConfiguration) WithMessage(value string) *DoguUnitStatusApplyConfiguration {
+	b.UnitStatusApplyConfiguration.Message = &value
+	return b
+}
+
 // WithProviderRef sets the ProviderRef field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the ProviderRef field is set to the value of the last call.
 func (b *DoguUnitStatusApplyConfiguration) WithProviderRef(value *ProviderRefApplyConfiguration) *DoguUnitStatusApplyConfiguration {
-	b.ProviderRef = value
+	b.UnitStatusApplyConfiguration.ProviderRef = value
 	return b
 }

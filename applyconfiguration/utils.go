@@ -37,8 +37,8 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &apiv1.DoguUnitStatusApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("DoguVersion"):
 		return &apiv1.DoguVersionApplyConfiguration{}
-	case v1.SchemeGroupVersion.WithKind("FailedUnit"):
-		return &apiv1.FailedUnitApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("IdentifiedUnitStatus"):
+		return &apiv1.IdentifiedUnitStatusApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("ProviderRef"):
 		return &apiv1.ProviderRefApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("Restore"):
@@ -47,6 +47,8 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &apiv1.RestoreSpecApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("RestoreStatus"):
 		return &apiv1.RestoreStatusApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("UnitIdentifier"):
+		return &apiv1.UnitIdentifierApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("UnitOptions"):
 		return &apiv1.UnitOptionsApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("UnitStatus"):

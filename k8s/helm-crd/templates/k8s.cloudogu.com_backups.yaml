@@ -232,11 +232,16 @@ spec:
                   items:
                     description: DoguUnitStatus describes the unit of a single V3 dogu.
                     properties:
+                      message:
+                        description: Message contains a human-readable explanation of the state.
+                        type: string
                       name:
                         description: Name of the dogu without namespace.
                         type: string
                       providerRef:
-                        description: ProviderRef references the provider backup of the unit.
+                        description: |-
+                          ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
+                          It is set for the states Succeeded and Failed and empty for the state Missing.
                         properties:
                           name:
                             description: Name of the provider object.
@@ -244,48 +249,37 @@ spec:
                         required:
                           - name
                         type: object
+                      reason:
+                        description: Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
+                        type: string
+                      state:
+                        description: State of the unit. It is empty as long as the unit has no terminal result.
+                        enum:
+                          - Succeeded
+                          - Failed
+                          - Missing
+                        type: string
                       version:
                         description: Version of the dogu.
                         type: string
                     required:
                       - name
-                      - providerRef
                       - version
                     type: object
                   type: array
                   x-kubernetes-list-map-keys:
                     - name
                   x-kubernetes-list-type: map
-                failedUnits:
-                  description: FailedUnits contains the units whose provider backup failed.
-                  items:
-                    description: FailedUnit describes a unit whose provider operation failed.
-                    properties:
-                      name:
-                        description: Name of the dogu. Only set for units of type dogu.
-                        type: string
-                      providerRef:
-                        description: ProviderRef references the failed provider object.
-                        properties:
-                          name:
-                            description: Name of the provider object.
-                            type: string
-                        required:
-                          - name
-                        type: object
-                      type:
-                        description: Type of the unit.
-                        type: string
-                    required:
-                      - providerRef
-                      - type
-                    type: object
-                  type: array
                 globalConfig:
                   description: GlobalConfig describes the global-config unit.
                   properties:
+                    message:
+                      description: Message contains a human-readable explanation of the state.
+                      type: string
                     providerRef:
-                      description: ProviderRef references the provider backup of the unit.
+                      description: |-
+                        ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
+                        It is set for the states Succeeded and Failed and empty for the state Missing.
                       properties:
                         name:
                           description: Name of the provider object.
@@ -293,14 +287,27 @@ spec:
                       required:
                         - name
                       type: object
-                  required:
-                    - providerRef
+                    reason:
+                      description: Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
+                      type: string
+                    state:
+                      description: State of the unit. It is empty as long as the unit has no terminal result.
+                      enum:
+                        - Succeeded
+                        - Failed
+                        - Missing
+                      type: string
                   type: object
                 misc:
                   description: Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
                   properties:
+                    message:
+                      description: Message contains a human-readable explanation of the state.
+                      type: string
                     providerRef:
-                      description: ProviderRef references the provider backup of the unit.
+                      description: |-
+                        ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
+                        It is set for the states Succeeded and Failed and empty for the state Missing.
                       properties:
                         name:
                           description: Name of the provider object.
@@ -308,8 +315,16 @@ spec:
                       required:
                         - name
                       type: object
-                  required:
-                    - providerRef
+                    reason:
+                      description: Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
+                      type: string
+                    state:
+                      description: State of the unit. It is empty as long as the unit has no terminal result.
+                      enum:
+                        - Succeeded
+                        - Failed
+                        - Missing
+                      type: string
                   type: object
                 requeueTimeNanos:
                   description: RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
@@ -344,8 +359,13 @@ spec:
                       x-kubernetes-list-map-keys:
                         - name
                       x-kubernetes-list-type: map
+                    message:
+                      description: Message contains a human-readable explanation of the state.
+                      type: string
                     providerRef:
-                      description: ProviderRef references the provider backup of the unit.
+                      description: |-
+                        ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
+                        It is set for the states Succeeded and Failed and empty for the state Missing.
                       properties:
                         name:
                           description: Name of the provider object.
@@ -353,8 +373,16 @@ spec:
                       required:
                         - name
                       type: object
-                  required:
-                    - providerRef
+                    reason:
+                      description: Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
+                      type: string
+                    state:
+                      description: State of the unit. It is empty as long as the unit has no terminal result.
+                      enum:
+                        - Succeeded
+                        - Failed
+                        - Missing
+                      type: string
                   type: object
               type: object
           type: object

@@ -14,10 +14,10 @@ import (
 // RestoreStatusApplyConfiguration represents a declarative configuration of the RestoreStatus type for use
 // with apply.
 type RestoreStatusApplyConfiguration struct {
-	Status           *string                              `json:"status,omitempty"`
-	RequeueTimeNanos *time.Duration                       `json:"requeueTimeNanos,omitempty"`
-	Conditions       []metav1.ConditionApplyConfiguration `json:"conditions,omitempty"`
-	FailedUnits      []FailedUnitApplyConfiguration       `json:"failedUnits,omitempty"`
+	Status           *string                                  `json:"status,omitempty"`
+	RequeueTimeNanos *time.Duration                           `json:"requeueTimeNanos,omitempty"`
+	Conditions       []metav1.ConditionApplyConfiguration     `json:"conditions,omitempty"`
+	Units            []IdentifiedUnitStatusApplyConfiguration `json:"units,omitempty"`
 }
 
 // RestoreStatusApplyConfiguration constructs a declarative configuration of the RestoreStatus type for use with
@@ -55,15 +55,15 @@ func (b *RestoreStatusApplyConfiguration) WithConditions(values ...*metav1.Condi
 	return b
 }
 
-// WithFailedUnits adds the given value to the FailedUnits field in the declarative configuration
+// WithUnits adds the given value to the Units field in the declarative configuration
 // and returns the receiver, so that objects can be build by chaining "With" function invocations.
-// If called multiple times, values provided by each call will be appended to the FailedUnits field.
-func (b *RestoreStatusApplyConfiguration) WithFailedUnits(values ...*FailedUnitApplyConfiguration) *RestoreStatusApplyConfiguration {
+// If called multiple times, values provided by each call will be appended to the Units field.
+func (b *RestoreStatusApplyConfiguration) WithUnits(values ...*IdentifiedUnitStatusApplyConfiguration) *RestoreStatusApplyConfiguration {
 	for i := range values {
 		if values[i] == nil {
-			panic("nil value passed to WithFailedUnits")
+			panic("nil value passed to WithUnits")
 		}
-		b.FailedUnits = append(b.FailedUnits, *values[i])
+		b.Units = append(b.Units, *values[i])
 	}
 	return b
 }

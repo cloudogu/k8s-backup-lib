@@ -64,9 +64,10 @@ type RestoreStatus struct {
 	// +patchMergeKey=type
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
-	// FailedUnits contains the units whose provider restore failed. ProviderRef references the provider restore.
+	// Units describes the state of all units which are restored. ProviderRef references the provider restore.
+	// +listType=atomic
 	// +optional
-	FailedUnits []FailedUnit `json:"failedUnits,omitempty"`
+	Units []IdentifiedUnitStatus `json:"units,omitempty"`
 }
 
 // +genclient
@@ -123,4 +124,9 @@ func (rs RestoreStatus) GetStatus() string {
 // GetRequeueTimeNanos returns the requeue time in nano seconds.
 func (rs RestoreStatus) GetRequeueTimeNanos() time.Duration {
 	return rs.RequeueTimeNanos
+}
+
+// FailedUnits returns all units of the restore in state UnitStateFailed or UnitStateMissing.
+func (rs RestoreStatus) FailedUnits() []IdentifiedUnitStatus {
+	return failedUnits(rs.Units)
 }

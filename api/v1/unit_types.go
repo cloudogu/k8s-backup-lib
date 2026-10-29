@@ -96,10 +96,41 @@ type ProviderRef struct {
 	Name string `json:"name"`
 }
 
-// UnitStatus describes a unit which is not specific to a dogu.
+// UnitState defines the terminal state of a single unit.
+type UnitState string
+
+const (
+	// UnitStateSucceeded marks a unit whose provider operation succeeded.
+	UnitStateSucceeded UnitState = "Succeeded"
+	// UnitStateFailed marks a unit whose provider operation failed terminally.
+	UnitStateFailed UnitState = "Failed"
+	// UnitStateMissing marks an expected unit without a provider object, e.g. because it was never started,
+	// was deleted after a cancellation or did not arrive during a sync.
+	UnitStateMissing UnitState = "Missing"
+)
+
+// UnitStatus describes the state of a unit.
 type UnitStatus struct {
-	// ProviderRef references the provider backup of the unit.
-	ProviderRef ProviderRef `json:"providerRef"`
+	// State of the unit. It is empty as long as the unit has no terminal result.
+	// +kubebuilder:validation:Enum=Succeeded;Failed;Missing
+	// +optional
+	State UnitState `json:"state,omitempty"`
+	// Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
+	// +optional
+	Reason string `json:"reason,omitempty"`
+	// Message contains a human-readable explanation of the state.
+	// +optional
+	Message string `json:"message,omitempty"`
+	// ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
+	// It is set for the states Succeeded and Failed and empty for the state Missing.
+	// +optional
+	ProviderRef *ProviderRef `json:"providerRef,omitempty"`
+}
+
+// IdentifiedUnitStatus describes the state of a unit together with its identifier.
+type IdentifiedUnitStatus struct {
+	UnitIdentifier `json:",inline"`
+	UnitStatus     `json:",inline"`
 }
 
 // DoguVersion identifies a dogu in a specific version.
@@ -113,14 +144,12 @@ type DoguVersion struct {
 // DoguUnitStatus describes the unit of a single V3 dogu.
 type DoguUnitStatus struct {
 	DoguVersion `json:",inline"`
-	// ProviderRef references the provider backup of the unit.
-	ProviderRef ProviderRef `json:"providerRef"`
+	UnitStatus  `json:",inline"`
 }
 
 // V2DogusUnitStatus describes the unit containing all V2 dogus.
 type V2DogusUnitStatus struct {
-	// ProviderRef references the provider backup of the unit.
-	ProviderRef ProviderRef `json:"providerRef"`
+	UnitStatus `json:",inline"`
 	// Dogus contains all V2 dogus with their versions in this unit.
 	// +listType=map
 	// +listMapKey=name
@@ -136,13 +165,12 @@ type ComponentStatus struct {
 	Version string `json:"version"`
 }
 
-// FailedUnit describes a unit whose provider operation failed.
-type FailedUnit struct {
-	// Type of the unit.
-	Type UnitType `json:"type"`
-	// Name of the dogu. Only set for units of type dogu.
-	// +optional
-	Name string `json:"name,omitempty"`
-	// ProviderRef references the failed provider object.
-	ProviderRef ProviderRef `json:"providerRef"`
+func failedUnits(units []IdentifiedUnitStatus) []IdentifiedUnitStatus {
+	var failed []IdentifiedUnitStatus
+	for _, unit := range units {
+		if unit.State == UnitStateFailed || unit.State == UnitStateMissing {
+			failed = append(failed, unit)
+		}
+	}
+	return failed
 }

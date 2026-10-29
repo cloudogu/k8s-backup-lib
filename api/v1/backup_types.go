@@ -128,9 +128,6 @@ type BackupStatus struct {
 	// Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
 	// +optional
 	Misc *UnitStatus `json:"misc,omitempty"`
-	// FailedUnits contains the units whose provider backup failed.
-	// +optional
-	FailedUnits []FailedUnit `json:"failedUnits,omitempty"`
 }
 
 // +genclient
@@ -197,7 +194,7 @@ type RequeueableStatus interface {
 
 // GetStatus return the requeueable status.
 func (b *Backup) GetStatus() RequeueableStatus {
-	return b.Status
+	return &b.Status
 }
 
 func (b *Backup) GetNamespacedName() types.NamespacedName {
@@ -208,11 +205,46 @@ func (b *Backup) GetNamespacedName() types.NamespacedName {
 }
 
 // GetStatus return the status from the status object.
-func (bs BackupStatus) GetStatus() string {
+func (bs *BackupStatus) GetStatus() string {
 	return bs.Status
 }
 
-// GetRequeueTimeNanos returns the requeue time in nano seconds.
-func (bs BackupStatus) GetRequeueTimeNanos() time.Duration {
+// GetRequeueTimeNanos returns the requeue time in nanoseconds.
+func (bs *BackupStatus) GetRequeueTimeNanos() time.Duration {
 	return bs.RequeueTimeNanos
+}
+
+// Units returns the status of all units of the backup together with their identifiers.
+func (bs *BackupStatus) Units() []IdentifiedUnitStatus {
+	var units []IdentifiedUnitStatus
+	if bs.GlobalConfig != nil {
+		units = append(units, IdentifiedUnitStatus{
+			Type:       UnitTypeGlobalConfig,
+			UnitStatus: *bs.GlobalConfig,
+		})
+	}
+	if bs.V2Dogus != nil {
+		units = append(units, IdentifiedUnitStatus{
+			Type:       UnitTypeDoguV2,
+			UnitStatus: bs.V2Dogus.UnitStatus,
+		})
+	}
+	for _, dogu := range bs.Dogus {
+		units = append(units, IdentifiedUnitStatus{
+			Type: UnitTypeDogu, Name: dogu.Name,
+			UnitStatus: dogu.UnitStatus,
+		})
+	}
+	if bs.Misc != nil {
+		units = append(units, IdentifiedUnitStatus{
+			Type:       UnitTypeMisc,
+			UnitStatus: *bs.Misc,
+		})
+	}
+	return units
+}
+
+// FailedUnits returns all units of the backup in state UnitStateFailed or UnitStateMissing.
+func (bs *BackupStatus) FailedUnits() []IdentifiedUnitStatus {
+	return failedUnits(bs.Units())
 }

@@ -28,7 +28,6 @@ type BackupStatusApplyConfiguration struct {
 	Dogus               []DoguUnitStatusApplyConfiguration                      `json:"dogus,omitempty"`
 	Components          []ComponentStatusApplyConfiguration                     `json:"components,omitempty"`
 	Misc                *UnitStatusApplyConfiguration                           `json:"misc,omitempty"`
-	FailedUnits         []FailedUnitApplyConfiguration                          `json:"failedUnits,omitempty"`
 }
 
 // BackupStatusApplyConfiguration constructs a declarative configuration of the BackupStatus type for use with
@@ -145,18 +144,5 @@ func (b *BackupStatusApplyConfiguration) WithComponents(values ...*ComponentStat
 // If called multiple times, the Misc field is set to the value of the last call.
 func (b *BackupStatusApplyConfiguration) WithMisc(value *UnitStatusApplyConfiguration) *BackupStatusApplyConfiguration {
 	b.Misc = value
-	return b
-}
-
-// WithFailedUnits adds the given value to the FailedUnits field in the declarative configuration
-// and returns the receiver, so that objects can be build by chaining "With" function invocations.
-// If called multiple times, values provided by each call will be appended to the FailedUnits field.
-func (b *BackupStatusApplyConfiguration) WithFailedUnits(values ...*FailedUnitApplyConfiguration) *BackupStatusApplyConfiguration {
-	for i := range values {
-		if values[i] == nil {
-			panic("nil value passed to WithFailedUnits")
-		}
-		b.FailedUnits = append(b.FailedUnits, *values[i])
-	}
 	return b
 }

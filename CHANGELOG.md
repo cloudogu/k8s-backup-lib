@@ -8,8 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - [#12] Extend Backup and Restore CRDs for single dogu backups
   - `excludedDogus`, `excludedComponents` and `options` (incl. `failureMode`) in the spec of Backup and Restore
-  - unit status (`globalConfig`, `v2Dogus`, `dogus`, `components`, `misc`, `failedUnits`), `backupCoverage` and `blueprintId` in the Backup status
-  - `failedUnits` in the Restore status
+  - unit status (`globalConfig`, `v2Dogus`, `dogus`, `components`, `misc`), `backupCoverage` and `blueprintId` in the Backup status
+  - `units` in the Restore status
+  - every unit contains its terminal `state` (`Succeeded`, `Failed`, `Missing`), `reason`, `message` and an optional `providerRef`
+  - `Units()` and `FailedUnits()` on the Backup status and `FailedUnits()` on the Restore status
   - shared constants for unit types and label/annotation keys of provider backups and restores
   - `UnitIdentifier` for the serialized list of expected units on provider backups
   - spec of Backup and Restore is immutable
