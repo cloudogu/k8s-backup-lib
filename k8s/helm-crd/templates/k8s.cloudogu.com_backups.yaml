@@ -273,6 +273,12 @@ spec:
                 globalConfig:
                   description: GlobalConfig describes the global-config unit.
                   properties:
+                    domain:
+                      description: Domain of the system at the time of the backup.
+                      type: string
+                    fqdn:
+                      description: FQDN of the system at the time of the backup.
+                      type: string
                     message:
                       description: Message contains a human-readable explanation of the state.
                       type: string
@@ -297,6 +303,9 @@ spec:
                         - Failed
                         - Missing
                       type: string
+                  required:
+                    - domain
+                    - fqdn
                   type: object
                 misc:
                   description: Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.

@@ -31,6 +31,12 @@ const (
 	UnitsAnnotationKey = "k8s.cloudogu.com/backup-units"
 	// FailureModeAnnotationKey contains the FailureMode of the Cloudogu backup.
 	FailureModeAnnotationKey = "k8s.cloudogu.com/backup-failure-mode"
+	// FQDNAnnotationKey contains the FQDN of the system at the time of the backup.
+	// It is only set on the provider backup of the global-config unit.
+	FQDNAnnotationKey = "k8s.cloudogu.com/backup-fqdn"
+	// DomainAnnotationKey contains the domain of the system at the time of the backup.
+	// It is only set on the provider backup of the global-config unit.
+	DomainAnnotationKey = "k8s.cloudogu.com/backup-domain"
 )
 
 // UnitType defines the type of backup unit. Each unit is backed up by its own provider backup.
@@ -131,6 +137,15 @@ type UnitStatus struct {
 type IdentifiedUnitStatus struct {
 	UnitIdentifier `json:",inline"`
 	UnitStatus     `json:",inline"`
+}
+
+// GlobalConfigStatus describes the global-config unit.
+type GlobalConfigStatus struct {
+	UnitStatus `json:",inline"`
+	// FQDN of the system at the time of the backup.
+	FQDN string `json:"fqdn"`
+	// Domain of the system at the time of the backup.
+	Domain string `json:"domain"`
 }
 
 // DoguVersion identifies a dogu in a specific version.

@@ -14,7 +14,10 @@ func TestBackupStatus_Units(t *testing.T) {
 
 	t.Run("should return all units with identifiers", func(t *testing.T) {
 		status := BackupStatus{
-			GlobalConfig: &UnitStatus{State: UnitStateSucceeded, ProviderRef: &ProviderRef{Name: "backup-global-config"}},
+			GlobalConfig: &GlobalConfigStatus{
+				State: UnitStateSucceeded, ProviderRef: &ProviderRef{Name: "backup-global-config"},
+				FQDN: "ces.example.com", Domain: "example.com",
+			},
 			V2Dogus: &V2DogusUnitStatus{
 				State: UnitStateSucceeded, ProviderRef: &ProviderRef{Name: "backup-doguv2"},
 				Dogus: []DoguVersion{{Name: "redmine", Version: "5.1.0-1"}},
@@ -27,7 +30,7 @@ func TestBackupStatus_Units(t *testing.T) {
 		}
 
 		expected := []IdentifiedUnitStatus{
-			{Type: UnitTypeGlobalConfig, UnitStatus: *status.GlobalConfig},
+			{Type: UnitTypeGlobalConfig, UnitStatus: status.GlobalConfig.UnitStatus},
 			{Type: UnitTypeDoguV2, UnitStatus: status.V2Dogus.UnitStatus},
 			{Type: UnitTypeDogu, Name: "scm", UnitStatus: status.Dogus[0].UnitStatus},
 			{Type: UnitTypeDogu, Name: "jenkins", UnitStatus: status.Dogus[1].UnitStatus},
@@ -39,7 +42,7 @@ func TestBackupStatus_Units(t *testing.T) {
 
 func TestBackupStatus_FailedUnits(t *testing.T) {
 	status := BackupStatus{
-		GlobalConfig: &UnitStatus{State: UnitStateMissing, Reason: "NotStarted"},
+		GlobalConfig: &GlobalConfigStatus{State: UnitStateMissing, Reason: "NotStarted"},
 		Dogus: []DoguUnitStatus{
 			{Name: "scm", Version: "3.0.0-1", State: UnitStateFailed},
 			{Name: "jenkins", Version: "2.0.0-1", State: UnitStateSucceeded},

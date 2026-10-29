@@ -37,6 +37,8 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &apiv1.DoguUnitStatusApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("DoguVersion"):
 		return &apiv1.DoguVersionApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("GlobalConfigStatus"):
+		return &apiv1.GlobalConfigStatusApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("IdentifiedUnitStatus"):
 		return &apiv1.IdentifiedUnitStatusApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("ProviderRef"):

@@ -111,7 +111,7 @@ type BackupStatus struct {
 	BlueprintID string `json:"blueprintId,omitempty"`
 	// GlobalConfig describes the global-config unit.
 	// +optional
-	GlobalConfig *UnitStatus `json:"globalConfig,omitempty"`
+	GlobalConfig *GlobalConfigStatus `json:"globalConfig,omitempty"`
 	// V2Dogus describes the unit containing all V2 dogus.
 	// +optional
 	V2Dogus *V2DogusUnitStatus `json:"v2Dogus,omitempty"`
@@ -220,7 +220,7 @@ func (bs *BackupStatus) Units() []IdentifiedUnitStatus {
 	if bs.GlobalConfig != nil {
 		units = append(units, IdentifiedUnitStatus{
 			Type:       UnitTypeGlobalConfig,
-			UnitStatus: *bs.GlobalConfig,
+			UnitStatus: bs.GlobalConfig.UnitStatus,
 		})
 	}
 	if bs.V2Dogus != nil {

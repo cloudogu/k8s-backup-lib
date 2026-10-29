@@ -23,7 +23,7 @@ type BackupStatusApplyConfiguration struct {
 	Conditions          []applyconfigurationsmetav1.ConditionApplyConfiguration `json:"conditions,omitempty"`
 	BackupCoverage      *apiv1.BackupCoverage                                   `json:"backupCoverage,omitempty"`
 	BlueprintID         *string                                                 `json:"blueprintId,omitempty"`
-	GlobalConfig        *UnitStatusApplyConfiguration                           `json:"globalConfig,omitempty"`
+	GlobalConfig        *GlobalConfigStatusApplyConfiguration                   `json:"globalConfig,omitempty"`
 	V2Dogus             *V2DogusUnitStatusApplyConfiguration                    `json:"v2Dogus,omitempty"`
 	Dogus               []DoguUnitStatusApplyConfiguration                      `json:"dogus,omitempty"`
 	Components          []ComponentStatusApplyConfiguration                     `json:"components,omitempty"`
@@ -100,7 +100,7 @@ func (b *BackupStatusApplyConfiguration) WithBlueprintID(value string) *BackupSt
 // WithGlobalConfig sets the GlobalConfig field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
 // If called multiple times, the GlobalConfig field is set to the value of the last call.
-func (b *BackupStatusApplyConfiguration) WithGlobalConfig(value *UnitStatusApplyConfiguration) *BackupStatusApplyConfiguration {
+func (b *BackupStatusApplyConfiguration) WithGlobalConfig(value *GlobalConfigStatusApplyConfiguration) *BackupStatusApplyConfiguration {
 	b.GlobalConfig = value
 	return b
 }
