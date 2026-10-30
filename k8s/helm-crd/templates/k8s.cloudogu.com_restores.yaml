@@ -94,13 +94,6 @@ spec:
                 options:
                   description: Options defines which units are restored and how failed units are handled.
                   properties:
-                    failureMode:
-                      default: partiallyAllowed
-                      description: FailureMode defines how failed units are handled.
-                      enum:
-                        - failfast
-                        - partiallyAllowed
-                      type: string
                     ignoreGlobalConfig:
                       description: IgnoreGlobalConfig excludes the global-config unit.
                       type: boolean

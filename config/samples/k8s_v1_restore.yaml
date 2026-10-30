@@ -17,4 +17,3 @@ spec:
     - k8s-prometheus
   options:
     ignoreGlobalConfig: true
-    failureMode: failfast

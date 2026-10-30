@@ -5,17 +5,12 @@ This file was generated with "make generate-deepcopy".
 
 package v1
 
-import (
-	apiv1 "github.com/cloudogu/k8s-backup-lib/api/v1"
-)
-
 // UnitOptionsApplyConfiguration represents a declarative configuration of the UnitOptions type for use
 // with apply.
 type UnitOptionsApplyConfiguration struct {
-	IgnoreGlobalConfig *bool              `json:"ignoreGlobalConfig,omitempty"`
-	IgnoreV2Dogus      *bool              `json:"ignoreV2Dogus,omitempty"`
-	IgnoreMisc         *bool              `json:"ignoreMisc,omitempty"`
-	FailureMode        *apiv1.FailureMode `json:"failureMode,omitempty"`
+	IgnoreGlobalConfig *bool `json:"ignoreGlobalConfig,omitempty"`
+	IgnoreV2Dogus      *bool `json:"ignoreV2Dogus,omitempty"`
+	IgnoreMisc         *bool `json:"ignoreMisc,omitempty"`
 }
 
 // UnitOptionsApplyConfiguration constructs a declarative configuration of the UnitOptions type for use with
@@ -45,13 +40,5 @@ func (b *UnitOptionsApplyConfiguration) WithIgnoreV2Dogus(value bool) *UnitOptio
 // If called multiple times, the IgnoreMisc field is set to the value of the last call.
 func (b *UnitOptionsApplyConfiguration) WithIgnoreMisc(value bool) *UnitOptionsApplyConfiguration {
 	b.IgnoreMisc = &value
-	return b
-}
-
-// WithFailureMode sets the FailureMode field in the declarative configuration to the given value
-// and returns the receiver, so that objects can be built by chaining "With" function invocations.
-// If called multiple times, the FailureMode field is set to the value of the last call.
-func (b *UnitOptionsApplyConfiguration) WithFailureMode(value apiv1.FailureMode) *UnitOptionsApplyConfiguration {
-	b.FailureMode = &value
 	return b
 }

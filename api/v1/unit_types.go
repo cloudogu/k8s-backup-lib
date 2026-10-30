@@ -29,8 +29,6 @@ const (
 	// UnitsAnnotationKey contains the serialized list of all expected units of the Cloudogu backup.
 	// It is used to detect missing units when the Cloudogu backup is reconstructed from the provider backups.
 	UnitsAnnotationKey = "k8s.cloudogu.com/backup-units"
-	// FailureModeAnnotationKey contains the FailureMode of the Cloudogu backup.
-	FailureModeAnnotationKey = "k8s.cloudogu.com/backup-failure-mode"
 	// FQDNAnnotationKey contains the FQDN of the system at the time of the backup.
 	// It is only set on the provider backup of the global-config unit.
 	FQDNAnnotationKey = "k8s.cloudogu.com/backup-fqdn"
@@ -73,7 +71,7 @@ const (
 	BackupCoveragePartial BackupCoverage = "partial"
 )
 
-// UnitOptions defines which units are processed and how failures are handled.
+// UnitOptions defines which units are processed.
 type UnitOptions struct {
 	// IgnoreGlobalConfig excludes the global-config unit.
 	IgnoreGlobalConfig bool `json:"ignoreGlobalConfig,omitempty"`
@@ -81,10 +79,6 @@ type UnitOptions struct {
 	IgnoreV2Dogus bool `json:"ignoreV2Dogus,omitempty"`
 	// IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
 	IgnoreMisc bool `json:"ignoreMisc,omitempty"`
-	// FailureMode defines how failed units are handled.
-	// +kubebuilder:validation:Enum=failfast;partiallyAllowed
-	// +kubebuilder:default=partiallyAllowed
-	FailureMode FailureMode `json:"failureMode,omitempty"`
 }
 
 // UnitIdentifier identifies a unit of a Cloudogu backup. A list of it is serialized into UnitsAnnotationKey.
