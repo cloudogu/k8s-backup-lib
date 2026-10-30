@@ -35,6 +35,8 @@ const (
 	// DomainAnnotationKey contains the domain of the system at the time of the backup.
 	// It is only set on the provider backup of the global-config unit.
 	DomainAnnotationKey = "k8s.cloudogu.com/backup-domain"
+	// ComponentsAnnotationKey contains the serialized list of components with name and version that are part of the misc unit.
+	ComponentsAnnotationKey = "k8s.cloudogu.com/backup-components"
 )
 
 // UnitType defines the type of backup unit. Each unit is backed up by its own provider backup.

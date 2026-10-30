@@ -120,7 +120,7 @@ type BackupStatus struct {
 	// +listMapKey=name
 	// +optional
 	Dogus []DoguUnitStatus `json:"dogus,omitempty"`
-	// Components contains the components at the time of the backup.
+	// Components contains the components that are part of the misc unit at the time of the backup.
 	// +listType=map
 	// +listMapKey=name
 	// +optional
