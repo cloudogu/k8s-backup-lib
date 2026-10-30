@@ -51,16 +51,6 @@ const (
 	UnitTypeMisc UnitType = "misc"
 )
 
-// FailureMode defines how failed units are handled.
-type FailureMode string
-
-const (
-	// FailureModeFailFast aborts the whole operation as soon as one unit fails.
-	FailureModeFailFast FailureMode = "failfast"
-	// FailureModePartiallyAllowed continues with the remaining units if one unit fails.
-	FailureModePartiallyAllowed FailureMode = "partiallyAllowed"
-)
-
 // BackupCoverage defines whether a backup contains the whole system.
 type BackupCoverage string
 
