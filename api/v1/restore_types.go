@@ -31,6 +31,24 @@ type RestoreSpec struct {
 	// Provider defines the backup provider which should be used for the restore.
 	// +kubebuilder:validation:Enum=velero
 	Provider Provider `json:"provider,omitempty"`
+	// ExcludedDogus contains the names of V3 dogus which are not restored.
+	// V2 dogus can only be excluded as a whole with Options.IgnoreV2Dogus.
+	// +listType=set
+	// +kubebuilder:validation:MaxItems=256
+	// +kubebuilder:validation:items:MaxLength=63
+	// +kubebuilder:validation:items:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+	// +optional
+	ExcludedDogus []string `json:"excludedDogus,omitempty"`
+	// ExcludedComponents contains the names of components whose resources are not restored.
+	// +listType=set
+	// +kubebuilder:validation:MaxItems=256
+	// +kubebuilder:validation:items:MaxLength=63
+	// +kubebuilder:validation:items:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+	// +optional
+	ExcludedComponents []string `json:"excludedComponents,omitempty"`
+	// Options defines which units are restored and how failed units are handled.
+	// +optional
+	Options UnitOptions `json:"options,omitempty"`
 }
 
 // RestoreStatus defines the observed state of Restore
@@ -46,8 +64,13 @@ type RestoreStatus struct {
 	// +patchMergeKey=type
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
+	// Units describes the state of all units which are restored. ProviderRef references the provider restore.
+	// +listType=atomic
+	// +optional
+	Units []IdentifiedUnitStatus `json:"units,omitempty"`
 }
 
+// +genclient
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels=app=ces;app.kubernetes.io/name=k8s-backup-operator;k8s.cloudogu.com/part-of=backup
@@ -64,6 +87,7 @@ type Restore struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// Spec defines the desired state of Restore
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="spec is immutable"
 	Spec RestoreSpec `json:"spec,omitempty"`
 	// Status defines the observed state of Restore
 	Status RestoreStatus `json:"status,omitempty"`
@@ -100,4 +124,9 @@ func (rs RestoreStatus) GetStatus() string {
 // GetRequeueTimeNanos returns the requeue time in nano seconds.
 func (rs RestoreStatus) GetRequeueTimeNanos() time.Duration {
 	return rs.RequeueTimeNanos
+}
+
+// FailedUnits returns all units of the restore in state UnitStateFailed or UnitStateMissing.
+func (rs RestoreStatus) FailedUnits() []IdentifiedUnitStatus {
+	return failedUnits(rs.Units)
 }

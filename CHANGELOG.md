@@ -5,6 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- [#12] Extend Backup and Restore CRDs for single dogu backups
+  - `excludedDogus`, `excludedComponents` and `options` in the spec of Backup and Restore
+  - unit status (`globalConfig`, `v2Dogus`, `dogus`, `components`, `misc`), `backupCoverage` and `blueprintId` in the Backup status
+  - `fqdn` and `domain` of the system in the status of the `globalConfig` unit
+  - `units` in the Restore status
+  - every unit contains its terminal `state` (`Succeeded`, `Failed`, `Missing`), `reason`, `message` and an optional `providerRef`
+  - `Units()` and `FailedUnits()` on the Backup status and `FailedUnits()` on the Restore status
+  - shared constants for unit types and label/annotation keys of provider backups and restores
+  - `UnitIdentifier` for the serialized list of expected units on provider backups
+  - spec of Backup and Restore is immutable
+- [#12] Server side applyconfigurations
+
+### Changed
+- [#12] **Breaking Change** Generate client by `client-gen` and move it to the project root.
 
 ## [v1.9.0] - 2026-08-31
 ### Changed

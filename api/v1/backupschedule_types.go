@@ -94,6 +94,7 @@ func (bss BackupScheduleStatus) GetStatus() string {
 	return bss.Status
 }
 
+// +genclient
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:resource:shortName="bs"
