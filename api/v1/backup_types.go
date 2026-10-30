@@ -50,6 +50,13 @@ const (
 
 const BackupFinalizer = "cloudogu-backup-finalizer"
 
+const (
+	AppLabelKey            = "app"
+	AppLabelValueCes       = "ces"
+	PartOfLabelKey         = "k8s.cloudogu.com/part-of"
+	PartOfLabelValueBackup = "backup"
+)
+
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // BackupSpec defines the desired state of Backup
