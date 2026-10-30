@@ -23,7 +23,11 @@ const (
 // Annotations on provider backups.
 const (
 	// InstalledDogusV2AnnotationKey contains the serialized list of V2 dogus with their versions in the V2 unit.
+	// It is set on all provider backups of the Cloudogu backup.
 	InstalledDogusV2AnnotationKey = "k8s.cloudogu.com/backup-installed-dogus-v2"
+	// InstalledDogusV3AnnotationKey contains the serialized list of V3 dogus with their versions which have a unit
+	// in the Cloudogu backup. It is set on all provider backups of the Cloudogu backup.
+	InstalledDogusV3AnnotationKey = "k8s.cloudogu.com/backup-installed-dogus-v3"
 	// BlueprintIDAnnotationKey contains the ID of the blueprint which was installed at the time of the backup.
 	BlueprintIDAnnotationKey = "backup.cloudogu.com/blueprintId"
 	// UnitsAnnotationKey contains the serialized list of all expected units of the Cloudogu backup.
