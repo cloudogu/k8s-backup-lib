@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 const testNamespace = "test-ns"
@@ -68,15 +67,13 @@ func TestBackupSchedule_CronJobPodTemplate(t *testing.T) {
 	t.Run("should use pullifpresent on production", func(t *testing.T) {
 		// given
 		expected := corev1.PodTemplateSpec{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      "scheduled-backup-creator",
-				Namespace: testNamespace,
-				Labels: map[string]string{
-					"app":                          "ces",
-					"k8s.cloudogu.com/part-of":     "backup",
-					"app.kubernetes.io/created-by": "k8s-backup-operator",
-					"app.kubernetes.io/part-of":    "k8s-backup-operator",
-				},
+			Name:      "scheduled-backup-creator",
+			Namespace: testNamespace,
+			Labels: map[string]string{
+				"app":                          "ces",
+				"k8s.cloudogu.com/part-of":     "backup",
+				"app.kubernetes.io/created-by": "k8s-backup-operator",
+				"app.kubernetes.io/part-of":    "k8s-backup-operator",
 			},
 			Spec: corev1.PodSpec{
 				Containers: []corev1.Container{{
@@ -93,10 +90,8 @@ func TestBackupSchedule_CronJobPodTemplate(t *testing.T) {
 			},
 		}
 		sut := &BackupSchedule{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      "my-schedule",
-				Namespace: testNamespace,
-			},
+			Name:      "my-schedule",
+			Namespace: testNamespace,
 			Spec: BackupScheduleSpec{
 				Schedule: "* * * * *",
 				Provider: "velero",

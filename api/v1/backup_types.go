@@ -50,6 +50,13 @@ const (
 
 const BackupFinalizer = "cloudogu-backup-finalizer"
 
+const (
+	AppLabelKey            = "app"
+	AppLabelValueCes       = "ces"
+	PartOfLabelKey         = "k8s.cloudogu.com/part-of"
+	PartOfLabelValueBackup = "backup"
+)
+
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // BackupSpec defines the desired state of Backup
@@ -64,6 +71,24 @@ type BackupSpec struct {
 	// This is necessary because we cannot set the status of a backup on creation, see:
 	// https://stackoverflow.com/questions/73574615/how-to-create-kubernetes-objects-with-status-fields
 	SyncedFromProvider bool `json:"syncedFromProvider,omitempty"`
+	// ExcludedDogus contains the names of V3 dogus which are not backed up.
+	// V2 dogus can only be excluded as a whole with Options.IgnoreV2Dogus.
+	// +listType=set
+	// +kubebuilder:validation:MaxItems=256
+	// +kubebuilder:validation:items:MaxLength=63
+	// +kubebuilder:validation:items:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+	// +optional
+	ExcludedDogus []string `json:"excludedDogus,omitempty"`
+	// ExcludedComponents contains the names of components whose resources are not backed up.
+	// +listType=set
+	// +kubebuilder:validation:MaxItems=256
+	// +kubebuilder:validation:items:MaxLength=63
+	// +kubebuilder:validation:items:Pattern=`^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
+	// +optional
+	ExcludedComponents []string `json:"excludedComponents,omitempty"`
+	// Options defines which units are backed up and how failed units are handled.
+	// +optional
+	Options UnitOptions `json:"options,omitempty"`
 }
 
 // BackupStatus defines the observed state of Backup
@@ -83,8 +108,36 @@ type BackupStatus struct {
 	// +patchMergeKey=type
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type"`
+	// BackupCoverage defines whether the backup contains the whole system.
+	// +kubebuilder:validation:Enum=full;partial
+	// +optional
+	BackupCoverage BackupCoverage `json:"backupCoverage,omitempty"`
+	// BlueprintID contains the ID of the blueprint which was installed at the time of the backup.
+	// It is empty if no blueprint was installed.
+	// +optional
+	BlueprintID string `json:"blueprintId,omitempty"`
+	// GlobalConfig describes the global-config unit.
+	// +optional
+	GlobalConfig *GlobalConfigStatus `json:"globalConfig,omitempty"`
+	// V2Dogus describes the unit containing all V2 dogus.
+	// +optional
+	V2Dogus *V2DogusUnitStatus `json:"v2Dogus,omitempty"`
+	// Dogus describes the units of the V3 dogus.
+	// +listType=map
+	// +listMapKey=name
+	// +optional
+	Dogus []DoguUnitStatus `json:"dogus,omitempty"`
+	// Components contains the components that are part of the misc unit at the time of the backup.
+	// +listType=map
+	// +listMapKey=name
+	// +optional
+	Components []ComponentStatus `json:"components,omitempty"`
+	// Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
+	// +optional
+	Misc *UnitStatus `json:"misc,omitempty"`
 }
 
+// +genclient
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels=app=ces;app.kubernetes.io/name=k8s-backup-operator;k8s.cloudogu.com/part-of=backup
@@ -95,6 +148,7 @@ type BackupStatus struct {
 // +kubebuilder:printcolumn:name="ProviderSucceeded",type="string",JSONPath=".status.conditions[?(@.type=='ProviderSucceeded')].status",description="Whether the provider backup is completed"
 // +kubebuilder:printcolumn:name="Canceled",type="string",JSONPath=".status.conditions[?(@.type=='Canceled')].status",description="Whether the backup is canceled"
 // +kubebuilder:printcolumn:name="Deleting",type="string",JSONPath=".status.conditions[?(@.type=='Deleting')].status",description="Whether the backup is deleting"
+// +kubebuilder:printcolumn:name="Coverage",type="string",JSONPath=".status.backupCoverage",description="Whether the backup contains the whole system"
 
 // Backup is the Schema for the backups API
 type Backup struct {
@@ -102,6 +156,7 @@ type Backup struct {
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
 	// Spec defines the desired state of Backup
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="spec is immutable"
 	Spec BackupSpec `json:"spec,omitempty"`
 	// Status defines the observed state of Backup
 	Status BackupStatus `json:"status,omitempty"`
@@ -146,7 +201,7 @@ type RequeueableStatus interface {
 
 // GetStatus return the requeueable status.
 func (b *Backup) GetStatus() RequeueableStatus {
-	return b.Status
+	return &b.Status
 }
 
 func (b *Backup) GetNamespacedName() types.NamespacedName {
@@ -157,11 +212,46 @@ func (b *Backup) GetNamespacedName() types.NamespacedName {
 }
 
 // GetStatus return the status from the status object.
-func (bs BackupStatus) GetStatus() string {
+func (bs *BackupStatus) GetStatus() string {
 	return bs.Status
 }
 
-// GetRequeueTimeNanos returns the requeue time in nano seconds.
-func (bs BackupStatus) GetRequeueTimeNanos() time.Duration {
+// GetRequeueTimeNanos returns the requeue time in nanoseconds.
+func (bs *BackupStatus) GetRequeueTimeNanos() time.Duration {
 	return bs.RequeueTimeNanos
+}
+
+// Units returns the status of all units of the backup together with their identifiers.
+func (bs *BackupStatus) Units() []IdentifiedUnitStatus {
+	var units []IdentifiedUnitStatus
+	if bs.GlobalConfig != nil {
+		units = append(units, IdentifiedUnitStatus{
+			Type:       UnitTypeGlobalConfig,
+			UnitStatus: bs.GlobalConfig.UnitStatus,
+		})
+	}
+	if bs.V2Dogus != nil {
+		units = append(units, IdentifiedUnitStatus{
+			Type:       UnitTypeDoguV2,
+			UnitStatus: bs.V2Dogus.UnitStatus,
+		})
+	}
+	for _, dogu := range bs.Dogus {
+		units = append(units, IdentifiedUnitStatus{
+			Type: UnitTypeDogu, Name: dogu.Name,
+			UnitStatus: dogu.UnitStatus,
+		})
+	}
+	if bs.Misc != nil {
+		units = append(units, IdentifiedUnitStatus{
+			Type:       UnitTypeMisc,
+			UnitStatus: *bs.Misc,
+		})
+	}
+	return units
+}
+
+// FailedUnits returns all units of the backup in state UnitStateFailed or UnitStateMissing.
+func (bs *BackupStatus) FailedUnits() []IdentifiedUnitStatus {
+	return failedUnits(bs.Units())
 }

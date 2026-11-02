@@ -71,12 +71,48 @@ spec:
                 backupName:
                   description: BackupName references the backup that should be restored.
                   type: string
+                excludedComponents:
+                  description: ExcludedComponents contains the names of components whose resources are not restored.
+                  items:
+                    maxLength: 63
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  maxItems: 256
+                  type: array
+                  x-kubernetes-list-type: set
+                excludedDogus:
+                  description: |-
+                    ExcludedDogus contains the names of V3 dogus which are not restored.
+                    V2 dogus can only be excluded as a whole with Options.IgnoreV2Dogus.
+                  items:
+                    maxLength: 63
+                    pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                    type: string
+                  maxItems: 256
+                  type: array
+                  x-kubernetes-list-type: set
+                options:
+                  description: Options defines which units are restored and how failed units are handled.
+                  properties:
+                    ignoreGlobalConfig:
+                      description: IgnoreGlobalConfig excludes the global-config unit.
+                      type: boolean
+                    ignoreMisc:
+                      description: IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
+                      type: boolean
+                    ignoreV2Dogus:
+                      description: IgnoreV2Dogus excludes the unit containing all V2 dogus.
+                      type: boolean
+                  type: object
                 provider:
                   description: Provider defines the backup provider which should be used for the restore.
                   enum:
                     - velero
                   type: string
               type: object
+              x-kubernetes-validations:
+                - message: spec is immutable
+                  rule: self == oldSelf
             status:
               description: Status defines the observed state of Restore
               properties:
@@ -146,6 +182,46 @@ spec:
                 status:
                   description: Status represents the state of the backup.
                   type: string
+                units:
+                  description: Units describes the state of all units which are restored. ProviderRef references the provider restore.
+                  items:
+                    description: IdentifiedUnitStatus describes the state of a unit together with its identifier.
+                    properties:
+                      message:
+                        description: Message contains a human-readable explanation of the state.
+                        type: string
+                      name:
+                        description: Name of the dogu. Only set for units of type dogu.
+                        type: string
+                      providerRef:
+                        description: |-
+                          ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
+                          It is set for the states Succeeded and Failed and empty for the state Missing.
+                        properties:
+                          name:
+                            description: Name of the provider object.
+                            type: string
+                        required:
+                          - name
+                        type: object
+                      reason:
+                        description: Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
+                        type: string
+                      state:
+                        description: State of the unit. It is empty as long as the unit has no terminal result.
+                        enum:
+                          - Succeeded
+                          - Failed
+                          - Missing
+                        type: string
+                      type:
+                        description: Type of the unit.
+                        type: string
+                    required:
+                      - type
+                    type: object
+                  type: array
+                  x-kubernetes-list-type: atomic
               type: object
           type: object
       served: true
