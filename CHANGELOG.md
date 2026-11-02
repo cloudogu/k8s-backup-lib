@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v1.10.0] - 2026-11-02
 ### Added
 - [#12] Extend Backup and Restore CRDs for single dogu backups
   - `excludedDogus`, `excludedComponents` and `options` in the spec of Backup and Restore
