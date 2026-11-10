@@ -13,11 +13,17 @@ import (
 
 // BackupScheduleStatusApplyConfiguration represents a declarative configuration of the BackupScheduleStatus type for use
 // with apply.
+//
+// BackupScheduleStatus defines the observed state of BackupSchedule
 type BackupScheduleStatusApplyConfiguration struct {
-	Status              *string                              `json:"status,omitempty"`
-	RequeueTimeNanos    *time.Duration                       `json:"requeueTimeNanos,omitempty"`
-	CurrentCronJobImage *string                              `json:"currentCronJobImage,omitempty"`
-	Conditions          []metav1.ConditionApplyConfiguration `json:"conditions,omitempty"`
+	// Status represents the state of the backup.
+	Status *string `json:"status,omitempty"`
+	// RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
+	RequeueTimeNanos *time.Duration `json:"requeueTimeNanos,omitempty"`
+	// CurrentCronJobImage is the image currently used to create scheduled backups.
+	CurrentCronJobImage *string `json:"currentCronJobImage,omitempty"`
+	// Conditions represent the latest available observations of the BackupSchedule's state.
+	Conditions []metav1.ConditionApplyConfiguration `json:"conditions,omitempty"`
 }
 
 // BackupScheduleStatusApplyConfiguration constructs a declarative configuration of the BackupScheduleStatus type for use with

@@ -11,10 +11,17 @@ import (
 
 // UnitStatusApplyConfiguration represents a declarative configuration of the UnitStatus type for use
 // with apply.
+//
+// UnitStatus describes the state of a unit.
 type UnitStatusApplyConfiguration struct {
-	State       *apiv1.UnitState               `json:"state,omitempty"`
-	Reason      *string                        `json:"reason,omitempty"`
-	Message     *string                        `json:"message,omitempty"`
+	// State of the unit. It is empty as long as the unit has no terminal result.
+	State *apiv1.UnitState `json:"state,omitempty"`
+	// Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
+	Reason *string `json:"reason,omitempty"`
+	// Message contains a human-readable explanation of the state.
+	Message *string `json:"message,omitempty"`
+	// ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
+	// It is set for the states Succeeded and Failed and empty for the state Missing.
 	ProviderRef *ProviderRefApplyConfiguration `json:"providerRef,omitempty"`
 }
 

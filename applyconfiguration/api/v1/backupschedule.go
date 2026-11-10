@@ -6,15 +6,20 @@ This file was generated with "make generate-deepcopy".
 package v1
 
 import (
+	apiv1 "github.com/cloudogu/k8s-backup-lib/api/v1"
+	internal "github.com/cloudogu/k8s-backup-lib/applyconfiguration/internal"
 	apismetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
+	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 	metav1 "k8s.io/client-go/applyconfigurations/meta/v1"
 )
 
 // BackupScheduleApplyConfiguration represents a declarative configuration of the BackupSchedule type for use
 // with apply.
+//
+// BackupSchedule is the Schema for the backupschedules API
 type BackupScheduleApplyConfiguration struct {
-	metav1.TypeMetaApplyConfiguration    `json:",inline"`
+	metav1.TypeMetaApplyConfiguration    `json:""`
 	*metav1.ObjectMetaApplyConfiguration `json:"metadata,omitempty"`
 	Spec                                 *BackupScheduleSpecApplyConfiguration   `json:"spec,omitempty"`
 	Status                               *BackupScheduleStatusApplyConfiguration `json:"status,omitempty"`
@@ -30,6 +35,48 @@ func BackupSchedule(name, namespace string) *BackupScheduleApplyConfiguration {
 	b.WithAPIVersion("k8s.cloudogu.com/v1")
 	return b
 }
+
+// ExtractBackupScheduleFrom extracts the applied configuration owned by fieldManager from
+// backupSchedule for the specified subresource. Pass an empty string for subresource to extract
+// the main resource. Common subresources include "status", "scale", etc.
+// backupSchedule must be a unmodified BackupSchedule API object that was retrieved from the Kubernetes API.
+// ExtractBackupScheduleFrom provides a way to perform a extract/modify-in-place/apply workflow.
+// Note that an extracted apply configuration will contain fewer fields than what the fieldManager previously
+// applied if another fieldManager has updated or force applied any of the previously applied fields.
+func ExtractBackupScheduleFrom(backupSchedule *apiv1.BackupSchedule, fieldManager string, subresource string) (*BackupScheduleApplyConfiguration, error) {
+	b := &BackupScheduleApplyConfiguration{}
+	err := managedfields.ExtractInto(backupSchedule, internal.Parser().Type("com.github.cloudogu.k8s-backup-lib.api.v1.BackupSchedule"), fieldManager, b, subresource)
+	if err != nil {
+		return nil, err
+	}
+	b.WithName(backupSchedule.Name)
+	b.WithNamespace(backupSchedule.Namespace)
+
+	b.WithKind("BackupSchedule")
+	b.WithAPIVersion("k8s.cloudogu.com/v1")
+	return b, nil
+}
+
+// ExtractBackupSchedule extracts the applied configuration owned by fieldManager from
+// backupSchedule. If no managedFields are found in backupSchedule for fieldManager, a
+// BackupScheduleApplyConfiguration is returned with only the Name, Namespace (if applicable),
+// APIVersion and Kind populated. It is possible that no managed fields were found for because other
+// field managers have taken ownership of all the fields previously owned by fieldManager, or because
+// the fieldManager never owned fields any fields.
+// backupSchedule must be a unmodified BackupSchedule API object that was retrieved from the Kubernetes API.
+// ExtractBackupSchedule provides a way to perform a extract/modify-in-place/apply workflow.
+// Note that an extracted apply configuration will contain fewer fields than what the fieldManager previously
+// applied if another fieldManager has updated or force applied any of the previously applied fields.
+func ExtractBackupSchedule(backupSchedule *apiv1.BackupSchedule, fieldManager string) (*BackupScheduleApplyConfiguration, error) {
+	return ExtractBackupScheduleFrom(backupSchedule, fieldManager, "")
+}
+
+// ExtractBackupScheduleStatus extracts the applied configuration owned by fieldManager from
+// backupSchedule for the status subresource.
+func ExtractBackupScheduleStatus(backupSchedule *apiv1.BackupSchedule, fieldManager string) (*BackupScheduleApplyConfiguration, error) {
+	return ExtractBackupScheduleFrom(backupSchedule, fieldManager, "status")
+}
+
 func (b BackupScheduleApplyConfiguration) IsApplyConfiguration() {}
 
 // WithKind sets the Kind field in the declarative configuration to the given value

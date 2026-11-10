@@ -6,18 +6,25 @@ This file was generated with "make generate-deepcopy".
 package v1
 
 import (
+	apiv1 "github.com/cloudogu/k8s-backup-lib/api/v1"
+	internal "github.com/cloudogu/k8s-backup-lib/applyconfiguration/internal"
 	apismetav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
+	managedfields "k8s.io/apimachinery/pkg/util/managedfields"
 	metav1 "k8s.io/client-go/applyconfigurations/meta/v1"
 )
 
 // RestoreApplyConfiguration represents a declarative configuration of the Restore type for use
 // with apply.
+//
+// Restore is the Schema for the restores API
 type RestoreApplyConfiguration struct {
-	metav1.TypeMetaApplyConfiguration    `json:",inline"`
+	metav1.TypeMetaApplyConfiguration    `json:""`
 	*metav1.ObjectMetaApplyConfiguration `json:"metadata,omitempty"`
-	Spec                                 *RestoreSpecApplyConfiguration   `json:"spec,omitempty"`
-	Status                               *RestoreStatusApplyConfiguration `json:"status,omitempty"`
+	// Spec defines the desired state of Restore
+	Spec *RestoreSpecApplyConfiguration `json:"spec,omitempty"`
+	// Status defines the observed state of Restore
+	Status *RestoreStatusApplyConfiguration `json:"status,omitempty"`
 }
 
 // Restore constructs a declarative configuration of the Restore type for use with
@@ -30,6 +37,48 @@ func Restore(name, namespace string) *RestoreApplyConfiguration {
 	b.WithAPIVersion("k8s.cloudogu.com/v1")
 	return b
 }
+
+// ExtractRestoreFrom extracts the applied configuration owned by fieldManager from
+// restore for the specified subresource. Pass an empty string for subresource to extract
+// the main resource. Common subresources include "status", "scale", etc.
+// restore must be a unmodified Restore API object that was retrieved from the Kubernetes API.
+// ExtractRestoreFrom provides a way to perform a extract/modify-in-place/apply workflow.
+// Note that an extracted apply configuration will contain fewer fields than what the fieldManager previously
+// applied if another fieldManager has updated or force applied any of the previously applied fields.
+func ExtractRestoreFrom(restore *apiv1.Restore, fieldManager string, subresource string) (*RestoreApplyConfiguration, error) {
+	b := &RestoreApplyConfiguration{}
+	err := managedfields.ExtractInto(restore, internal.Parser().Type("com.github.cloudogu.k8s-backup-lib.api.v1.Restore"), fieldManager, b, subresource)
+	if err != nil {
+		return nil, err
+	}
+	b.WithName(restore.Name)
+	b.WithNamespace(restore.Namespace)
+
+	b.WithKind("Restore")
+	b.WithAPIVersion("k8s.cloudogu.com/v1")
+	return b, nil
+}
+
+// ExtractRestore extracts the applied configuration owned by fieldManager from
+// restore. If no managedFields are found in restore for fieldManager, a
+// RestoreApplyConfiguration is returned with only the Name, Namespace (if applicable),
+// APIVersion and Kind populated. It is possible that no managed fields were found for because other
+// field managers have taken ownership of all the fields previously owned by fieldManager, or because
+// the fieldManager never owned fields any fields.
+// restore must be a unmodified Restore API object that was retrieved from the Kubernetes API.
+// ExtractRestore provides a way to perform a extract/modify-in-place/apply workflow.
+// Note that an extracted apply configuration will contain fewer fields than what the fieldManager previously
+// applied if another fieldManager has updated or force applied any of the previously applied fields.
+func ExtractRestore(restore *apiv1.Restore, fieldManager string) (*RestoreApplyConfiguration, error) {
+	return ExtractRestoreFrom(restore, fieldManager, "")
+}
+
+// ExtractRestoreStatus extracts the applied configuration owned by fieldManager from
+// restore for the status subresource.
+func ExtractRestoreStatus(restore *apiv1.Restore, fieldManager string) (*RestoreApplyConfiguration, error) {
+	return ExtractRestoreFrom(restore, fieldManager, "status")
+}
+
 func (b RestoreApplyConfiguration) IsApplyConfiguration() {}
 
 // WithKind sets the Kind field in the declarative configuration to the given value

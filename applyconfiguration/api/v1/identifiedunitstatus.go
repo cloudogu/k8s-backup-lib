@@ -11,9 +11,11 @@ import (
 
 // IdentifiedUnitStatusApplyConfiguration represents a declarative configuration of the IdentifiedUnitStatus type for use
 // with apply.
+//
+// IdentifiedUnitStatus describes the state of a unit together with its identifier.
 type IdentifiedUnitStatusApplyConfiguration struct {
-	UnitIdentifierApplyConfiguration `json:",inline"`
-	UnitStatusApplyConfiguration     `json:",inline"`
+	UnitIdentifierApplyConfiguration `json:""`
+	UnitStatusApplyConfiguration     `json:""`
 }
 
 // IdentifiedUnitStatusApplyConfiguration constructs a declarative configuration of the IdentifiedUnitStatus type for use with

@@ -11,8 +11,13 @@ import (
 
 // BackupScheduleSpecApplyConfiguration represents a declarative configuration of the BackupScheduleSpec type for use
 // with apply.
+//
+// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+// BackupScheduleSpec defines the desired state of BackupSchedule
 type BackupScheduleSpecApplyConfiguration struct {
-	Schedule *string         `json:"schedule,omitempty"`
+	// Schedule is a cron expression defining when to run the backup.
+	Schedule *string `json:"schedule,omitempty"`
+	// Provider defines the backup provider which should be used for the scheduled backups.
 	Provider *apiv1.Provider `json:"provider,omitempty"`
 }
 
