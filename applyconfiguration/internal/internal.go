@@ -29,15 +29,25 @@ var schemaYAML = typed.YAMLObject(`types:
 - name: Duration.time
   scalar: numeric
 - name: com.github.cloudogu.k8s-backup-lib.api.v1.Backup
-  scalar: untyped
-  list:
-    elementType:
-      namedType: __untyped_atomic_
-    elementRelationship: atomic
   map:
-    elementType:
-      namedType: __untyped_deduced_
-    elementRelationship: separable
+    fields:
+    - name: apiVersion
+      type:
+        scalar: string
+    - name: kind
+      type:
+        scalar: string
+    - name: metadata
+      type:
+        namedType: io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta
+    - name: spec
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.BackupSpec
+    - name: status
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.BackupStatus
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.BackupCoverage
+  scalar: string
 - name: com.github.cloudogu.k8s-backup-lib.api.v1.BackupSchedule
   map:
     fields:
@@ -85,18 +95,292 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: status
       type:
         scalar: string
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.BackupSpec
+  map:
+    fields:
+    - name: excludedComponents
+      type:
+        list:
+          elementType:
+            scalar: string
+          elementRelationship: associative
+    - name: excludedDogus
+      type:
+        list:
+          elementType:
+            scalar: string
+          elementRelationship: associative
+    - name: options
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitOptions
+    - name: provider
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.Provider
+    - name: syncedFromProvider
+      type:
+        scalar: boolean
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.BackupStatus
+  map:
+    fields:
+    - name: backupCoverage
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.BackupCoverage
+    - name: blueprintId
+      type:
+        scalar: string
+    - name: completionTimestamp
+      type:
+        namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Time
+    - name: components
+      type:
+        list:
+          elementType:
+            namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ComponentStatus
+          elementRelationship: associative
+          keys:
+          - name
+    - name: conditions
+      type:
+        list:
+          elementType:
+            namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Condition
+          elementRelationship: associative
+          keys:
+          - type
+    - name: dogus
+      type:
+        list:
+          elementType:
+            namedType: com.github.cloudogu.k8s-backup-lib.api.v1.DoguUnitStatus
+          elementRelationship: associative
+          keys:
+          - name
+    - name: globalConfig
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.GlobalConfigStatus
+    - name: misc
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitStatus
+    - name: requeueTimeNanos
+      type:
+        namedType: Duration.time
+    - name: startTimestamp
+      type:
+        namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Time
+    - name: status
+      type:
+        scalar: string
+    - name: v2Dogus
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.V2DogusUnitStatus
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.ComponentStatus
+  map:
+    fields:
+    - name: name
+      type:
+        scalar: string
+    - name: version
+      type:
+        scalar: string
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.DoguUnitStatus
+  map:
+    fields:
+    - name: message
+      type:
+        scalar: string
+    - name: name
+      type:
+        scalar: string
+    - name: providerRef
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ProviderRef
+    - name: reason
+      type:
+        scalar: string
+    - name: state
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
+    - name: version
+      type:
+        scalar: string
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.DoguVersion
+  map:
+    fields:
+    - name: name
+      type:
+        scalar: string
+    - name: version
+      type:
+        scalar: string
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.GlobalConfigStatus
+  map:
+    fields:
+    - name: domain
+      type:
+        scalar: string
+    - name: fqdn
+      type:
+        scalar: string
+    - name: message
+      type:
+        scalar: string
+    - name: providerRef
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ProviderRef
+    - name: reason
+      type:
+        scalar: string
+    - name: state
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.IdentifiedUnitStatus
+  map:
+    fields:
+    - name: message
+      type:
+        scalar: string
+    - name: name
+      type:
+        scalar: string
+    - name: providerRef
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ProviderRef
+    - name: reason
+      type:
+        scalar: string
+    - name: state
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
+    - name: type
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitType
 - name: com.github.cloudogu.k8s-backup-lib.api.v1.Provider
   scalar: string
-- name: com.github.cloudogu.k8s-backup-lib.api.v1.Restore
-  scalar: untyped
-  list:
-    elementType:
-      namedType: __untyped_atomic_
-    elementRelationship: atomic
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.ProviderRef
   map:
-    elementType:
-      namedType: __untyped_deduced_
-    elementRelationship: separable
+    fields:
+    - name: name
+      type:
+        scalar: string
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.Restore
+  map:
+    fields:
+    - name: apiVersion
+      type:
+        scalar: string
+    - name: kind
+      type:
+        scalar: string
+    - name: metadata
+      type:
+        namedType: io.k8s.apimachinery.pkg.apis.meta.v1.ObjectMeta
+    - name: spec
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.RestoreSpec
+    - name: status
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.RestoreStatus
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.RestoreSpec
+  map:
+    fields:
+    - name: backupName
+      type:
+        scalar: string
+    - name: excludedComponents
+      type:
+        list:
+          elementType:
+            scalar: string
+          elementRelationship: associative
+    - name: excludedDogus
+      type:
+        list:
+          elementType:
+            scalar: string
+          elementRelationship: associative
+    - name: options
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitOptions
+    - name: provider
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.Provider
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.RestoreStatus
+  map:
+    fields:
+    - name: conditions
+      type:
+        list:
+          elementType:
+            namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Condition
+          elementRelationship: associative
+          keys:
+          - type
+    - name: requeueTimeNanos
+      type:
+        namedType: Duration.time
+    - name: status
+      type:
+        scalar: string
+    - name: units
+      type:
+        list:
+          elementType:
+            namedType: com.github.cloudogu.k8s-backup-lib.api.v1.IdentifiedUnitStatus
+          elementRelationship: atomic
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.UnitOptions
+  map:
+    fields:
+    - name: ignoreGlobalConfig
+      type:
+        scalar: boolean
+    - name: ignoreMisc
+      type:
+        scalar: boolean
+    - name: ignoreV2Dogus
+      type:
+        scalar: boolean
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
+  scalar: string
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.UnitStatus
+  map:
+    fields:
+    - name: message
+      type:
+        scalar: string
+    - name: providerRef
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ProviderRef
+    - name: reason
+      type:
+        scalar: string
+    - name: state
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.UnitType
+  scalar: string
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.V2DogusUnitStatus
+  map:
+    fields:
+    - name: dogus
+      type:
+        list:
+          elementType:
+            namedType: com.github.cloudogu.k8s-backup-lib.api.v1.DoguVersion
+          elementRelationship: associative
+          keys:
+          - name
+    - name: message
+      type:
+        scalar: string
+    - name: providerRef
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ProviderRef
+    - name: reason
+      type:
+        scalar: string
+    - name: state
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
 - name: io.k8s.apimachinery.pkg.apis.meta.v1.Condition
   map:
     fields:
