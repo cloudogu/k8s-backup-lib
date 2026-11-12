@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.11.0] - 2026-11-12
+### Changed
+- [#14] Update controller-gen to `v0.23.0` to generate OpenAPI schema and helper functions for ssa.
+
 ## [v1.10.0] - 2026-11-02
 ### Added
 - [#12] Extend Backup and Restore CRDs for single dogu backups

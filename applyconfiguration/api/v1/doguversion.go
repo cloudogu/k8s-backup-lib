@@ -7,8 +7,12 @@ package v1
 
 // DoguVersionApplyConfiguration represents a declarative configuration of the DoguVersion type for use
 // with apply.
+//
+// DoguVersion identifies a dogu in a specific version.
 type DoguVersionApplyConfiguration struct {
-	Name    *string `json:"name,omitempty"`
+	// Name of the dogu without namespace.
+	Name *string `json:"name,omitempty"`
+	// Version of the dogu.
 	Version *string `json:"version,omitempty"`
 }
 

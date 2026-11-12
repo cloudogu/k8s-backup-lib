@@ -11,10 +11,14 @@ import (
 
 // GlobalConfigStatusApplyConfiguration represents a declarative configuration of the GlobalConfigStatus type for use
 // with apply.
+//
+// GlobalConfigStatus describes the global-config unit.
 type GlobalConfigStatusApplyConfiguration struct {
-	UnitStatusApplyConfiguration `json:",inline"`
-	FQDN                         *string `json:"fqdn,omitempty"`
-	Domain                       *string `json:"domain,omitempty"`
+	UnitStatusApplyConfiguration `json:""`
+	// FQDN of the system at the time of the backup.
+	FQDN *string `json:"fqdn,omitempty"`
+	// Domain of the system at the time of the backup.
+	Domain *string `json:"domain,omitempty"`
 }
 
 // GlobalConfigStatusApplyConfiguration constructs a declarative configuration of the GlobalConfigStatus type for use with

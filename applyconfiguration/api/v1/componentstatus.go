@@ -7,8 +7,12 @@ package v1
 
 // ComponentStatusApplyConfiguration represents a declarative configuration of the ComponentStatus type for use
 // with apply.
+//
+// ComponentStatus describes a component at the time of the backup.
 type ComponentStatusApplyConfiguration struct {
-	Name    *string `json:"name,omitempty"`
+	// Name of the component.
+	Name *string `json:"name,omitempty"`
+	// Version of the component.
 	Version *string `json:"version,omitempty"`
 }
 

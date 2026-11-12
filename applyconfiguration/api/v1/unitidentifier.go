@@ -11,9 +11,13 @@ import (
 
 // UnitIdentifierApplyConfiguration represents a declarative configuration of the UnitIdentifier type for use
 // with apply.
+//
+// UnitIdentifier identifies a unit of a Cloudogu backup. A list of it is serialized into UnitsAnnotationKey.
 type UnitIdentifierApplyConfiguration struct {
+	// Type of the unit.
 	Type *apiv1.UnitType `json:"type,omitempty"`
-	Name *string         `json:"name,omitempty"`
+	// Name of the dogu. Only set for units of type dogu.
+	Name *string `json:"name,omitempty"`
 }
 
 // UnitIdentifierApplyConfiguration constructs a declarative configuration of the UnitIdentifier type for use with

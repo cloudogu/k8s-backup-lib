@@ -7,10 +7,15 @@ package v1
 
 // UnitOptionsApplyConfiguration represents a declarative configuration of the UnitOptions type for use
 // with apply.
+//
+// UnitOptions defines which units are processed.
 type UnitOptionsApplyConfiguration struct {
+	// IgnoreGlobalConfig excludes the global-config unit.
 	IgnoreGlobalConfig *bool `json:"ignoreGlobalConfig,omitempty"`
-	IgnoreV2Dogus      *bool `json:"ignoreV2Dogus,omitempty"`
-	IgnoreMisc         *bool `json:"ignoreMisc,omitempty"`
+	// IgnoreV2Dogus excludes the unit containing all V2 dogus.
+	IgnoreV2Dogus *bool `json:"ignoreV2Dogus,omitempty"`
+	// IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
+	IgnoreMisc *bool `json:"ignoreMisc,omitempty"`
 }
 
 // UnitOptionsApplyConfiguration constructs a declarative configuration of the UnitOptions type for use with

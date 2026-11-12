@@ -72,6 +72,7 @@ type RestoreStatus struct {
 
 // +genclient
 // +kubebuilder:object:root=true
+// +kubebuilder:resource:scope=Namespaced
 // +kubebuilder:subresource:status
 // +kubebuilder:metadata:labels=app=ces;app.kubernetes.io/name=k8s-backup-operator;k8s.cloudogu.com/part-of=backup
 // +kubebuilder:printcolumn:name="Backup name",type="string",JSONPath=".spec.backupName",description="The backup name for the restore"
