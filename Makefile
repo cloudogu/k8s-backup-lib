@@ -5,9 +5,8 @@ IMAGE=cloudogu/${ARTIFACT_ID}:${VERSION}
 
 VERSION=1.10.0
 GOTAG=1.27.3
-MAKEFILES_VERSION=11.1.3
+MAKEFILES_VERSION=11.2.1
 LINT_VERSION=v2.15.0
-CONTROLLER_GEN_VERSION=v0.23.0
 
 include build/make/variables.mk
 include build/make/self-update.mk
