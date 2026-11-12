@@ -15,19 +15,34 @@ import (
 
 // BackupStatusApplyConfiguration represents a declarative configuration of the BackupStatus type for use
 // with apply.
+//
+// BackupStatus defines the observed state of Backup
 type BackupStatusApplyConfiguration struct {
-	Status              *string                                                 `json:"status,omitempty"`
-	RequeueTimeNanos    *time.Duration                                          `json:"requeueTimeNanos,omitempty"`
-	StartTimestamp      *metav1.Time                                            `json:"startTimestamp,omitempty"`
-	CompletionTimestamp *metav1.Time                                            `json:"completionTimestamp,omitempty"`
-	Conditions          []applyconfigurationsmetav1.ConditionApplyConfiguration `json:"conditions,omitempty"`
-	BackupCoverage      *apiv1.BackupCoverage                                   `json:"backupCoverage,omitempty"`
-	BlueprintID         *string                                                 `json:"blueprintId,omitempty"`
-	GlobalConfig        *GlobalConfigStatusApplyConfiguration                   `json:"globalConfig,omitempty"`
-	V2Dogus             *V2DogusUnitStatusApplyConfiguration                    `json:"v2Dogus,omitempty"`
-	Dogus               []DoguUnitStatusApplyConfiguration                      `json:"dogus,omitempty"`
-	Components          []ComponentStatusApplyConfiguration                     `json:"components,omitempty"`
-	Misc                *UnitStatusApplyConfiguration                           `json:"misc,omitempty"`
+	// Status represents the state of the backup.
+	Status *string `json:"status,omitempty"`
+	// RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
+	RequeueTimeNanos *time.Duration `json:"requeueTimeNanos,omitempty"`
+	// StartTimestamp marks the date/time when the backup started being processed.
+	StartTimestamp *metav1.Time `json:"startTimestamp,omitempty"`
+	// CompletionTimestamp marks the date/time when the backup finished being processed, regardless of any errors.
+	CompletionTimestamp *metav1.Time `json:"completionTimestamp,omitempty"`
+	// Conditions represent the latest available observations of the Backup's state.
+	Conditions []applyconfigurationsmetav1.ConditionApplyConfiguration `json:"conditions,omitempty"`
+	// BackupCoverage defines whether the backup contains the whole system.
+	BackupCoverage *apiv1.BackupCoverage `json:"backupCoverage,omitempty"`
+	// BlueprintID contains the ID of the blueprint which was installed at the time of the backup.
+	// It is empty if no blueprint was installed.
+	BlueprintID *string `json:"blueprintId,omitempty"`
+	// GlobalConfig describes the global-config unit.
+	GlobalConfig *GlobalConfigStatusApplyConfiguration `json:"globalConfig,omitempty"`
+	// V2Dogus describes the unit containing all V2 dogus.
+	V2Dogus *V2DogusUnitStatusApplyConfiguration `json:"v2Dogus,omitempty"`
+	// Dogus describes the units of the V3 dogus.
+	Dogus []DoguUnitStatusApplyConfiguration `json:"dogus,omitempty"`
+	// Components contains the components that are part of the misc unit at the time of the backup.
+	Components []ComponentStatusApplyConfiguration `json:"components,omitempty"`
+	// Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
+	Misc *UnitStatusApplyConfiguration `json:"misc,omitempty"`
 }
 
 // BackupStatusApplyConfiguration constructs a declarative configuration of the BackupStatus type for use with

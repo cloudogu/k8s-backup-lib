@@ -11,9 +11,12 @@ import (
 
 // V2DogusUnitStatusApplyConfiguration represents a declarative configuration of the V2DogusUnitStatus type for use
 // with apply.
+//
+// V2DogusUnitStatus describes the unit containing all V2 dogus.
 type V2DogusUnitStatusApplyConfiguration struct {
-	UnitStatusApplyConfiguration `json:",inline"`
-	Dogus                        []DoguVersionApplyConfiguration `json:"dogus,omitempty"`
+	UnitStatusApplyConfiguration `json:""`
+	// Dogus contains all V2 dogus with their versions in this unit.
+	Dogus []DoguVersionApplyConfiguration `json:"dogus,omitempty"`
 }
 
 // V2DogusUnitStatusApplyConfiguration constructs a declarative configuration of the V2DogusUnitStatus type for use with

@@ -13,11 +13,17 @@ import (
 
 // RestoreStatusApplyConfiguration represents a declarative configuration of the RestoreStatus type for use
 // with apply.
+//
+// RestoreStatus defines the observed state of Restore
 type RestoreStatusApplyConfiguration struct {
-	Status           *string                                  `json:"status,omitempty"`
-	RequeueTimeNanos *time.Duration                           `json:"requeueTimeNanos,omitempty"`
-	Conditions       []metav1.ConditionApplyConfiguration     `json:"conditions,omitempty"`
-	Units            []IdentifiedUnitStatusApplyConfiguration `json:"units,omitempty"`
+	// Status represents the state of the backup.
+	Status *string `json:"status,omitempty"`
+	// RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.
+	RequeueTimeNanos *time.Duration `json:"requeueTimeNanos,omitempty"`
+	// Conditions represent the latest available observations of the Restore's state.
+	Conditions []metav1.ConditionApplyConfiguration `json:"conditions,omitempty"`
+	// Units describes the state of all units which are restored. ProviderRef references the provider restore.
+	Units []IdentifiedUnitStatusApplyConfiguration `json:"units,omitempty"`
 }
 
 // RestoreStatusApplyConfiguration constructs a declarative configuration of the RestoreStatus type for use with

@@ -11,12 +11,23 @@ import (
 
 // BackupSpecApplyConfiguration represents a declarative configuration of the BackupSpec type for use
 // with apply.
+//
+// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+// BackupSpec defines the desired state of Backup
 type BackupSpecApplyConfiguration struct {
-	Provider           *apiv1.Provider                `json:"provider,omitempty"`
-	SyncedFromProvider *bool                          `json:"syncedFromProvider,omitempty"`
-	ExcludedDogus      []string                       `json:"excludedDogus,omitempty"`
-	ExcludedComponents []string                       `json:"excludedComponents,omitempty"`
-	Options            *UnitOptionsApplyConfiguration `json:"options,omitempty"`
+	// Provider defines the backup provider which should be used for the backup.
+	Provider *apiv1.Provider `json:"provider,omitempty"`
+	// SyncedFromProvider defines that this backup already exists in the provider and its status should be synced.
+	// This is necessary because we cannot set the status of a backup on creation, see:
+	// https://stackoverflow.com/questions/73574615/how-to-create-kubernetes-objects-with-status-fields
+	SyncedFromProvider *bool `json:"syncedFromProvider,omitempty"`
+	// ExcludedDogus contains the names of V3 dogus which are not backed up.
+	// V2 dogus can only be excluded as a whole with Options.IgnoreV2Dogus.
+	ExcludedDogus []string `json:"excludedDogus,omitempty"`
+	// ExcludedComponents contains the names of components whose resources are not backed up.
+	ExcludedComponents []string `json:"excludedComponents,omitempty"`
+	// Options defines which units are backed up and how failed units are handled.
+	Options *UnitOptionsApplyConfiguration `json:"options,omitempty"`
 }
 
 // BackupSpecApplyConfiguration constructs a declarative configuration of the BackupSpec type for use with

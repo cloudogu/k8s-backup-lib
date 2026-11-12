@@ -11,12 +11,21 @@ import (
 
 // RestoreSpecApplyConfiguration represents a declarative configuration of the RestoreSpec type for use
 // with apply.
+//
+// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+// RestoreSpec defines the desired state of Restore
 type RestoreSpecApplyConfiguration struct {
-	BackupName         *string                        `json:"backupName,omitempty"`
-	Provider           *apiv1.Provider                `json:"provider,omitempty"`
-	ExcludedDogus      []string                       `json:"excludedDogus,omitempty"`
-	ExcludedComponents []string                       `json:"excludedComponents,omitempty"`
-	Options            *UnitOptionsApplyConfiguration `json:"options,omitempty"`
+	// BackupName references the backup that should be restored.
+	BackupName *string `json:"backupName,omitempty"`
+	// Provider defines the backup provider which should be used for the restore.
+	Provider *apiv1.Provider `json:"provider,omitempty"`
+	// ExcludedDogus contains the names of V3 dogus which are not restored.
+	// V2 dogus can only be excluded as a whole with Options.IgnoreV2Dogus.
+	ExcludedDogus []string `json:"excludedDogus,omitempty"`
+	// ExcludedComponents contains the names of components whose resources are not restored.
+	ExcludedComponents []string `json:"excludedComponents,omitempty"`
+	// Options defines which units are restored and how failed units are handled.
+	Options *UnitOptionsApplyConfiguration `json:"options,omitempty"`
 }
 
 // RestoreSpecApplyConfiguration constructs a declarative configuration of the RestoreSpec type for use with

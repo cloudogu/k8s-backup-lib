@@ -11,9 +11,11 @@ import (
 
 // DoguUnitStatusApplyConfiguration represents a declarative configuration of the DoguUnitStatus type for use
 // with apply.
+//
+// DoguUnitStatus describes the unit of a single V3 dogu.
 type DoguUnitStatusApplyConfiguration struct {
-	DoguVersionApplyConfiguration `json:",inline"`
-	UnitStatusApplyConfiguration  `json:",inline"`
+	DoguVersionApplyConfiguration `json:""`
+	UnitStatusApplyConfiguration  `json:""`
 }
 
 // DoguUnitStatusApplyConfiguration constructs a declarative configuration of the DoguUnitStatus type for use with

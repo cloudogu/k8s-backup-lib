@@ -7,7 +7,10 @@ package v1
 
 // ProviderRefApplyConfiguration represents a declarative configuration of the ProviderRef type for use
 // with apply.
+//
+// ProviderRef references the object of the backup provider (e.g. a Velero backup or restore).
 type ProviderRefApplyConfiguration struct {
+	// Name of the provider object.
 	Name *string `json:"name,omitempty"`
 }
 
