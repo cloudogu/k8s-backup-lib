@@ -220,17 +220,9 @@ func (b *Backup) GetNamespacedName() types.NamespacedName {
 	}
 }
 
-// GetTruncatedName returns a shortened but still unique and reproducible name that fits into the 63-character limit of Kubernetes labels.
+// GetTruncatedName returns a shortened but still unique and reproducible backup name that fits into the 63-character limit of Kubernetes labels.
 func (b *Backup) GetTruncatedName() string {
-	if len(b.Name) <= maxLabelValueLength {
-		return b.Name
-	}
-
-	hasher := fnv.New32a()
-	_, _ = hasher.Write([]byte(b.Name)) // hash.Hash.Write never returns an error
-	suffix := fmt.Sprintf("%x", hasher.Sum32())
-
-	return fmt.Sprintf("%s-%s", b.Name[:maxLabelValueLength-backupNameHashLength-1], suffix)
+	return GetTruncatedName(b.Name)
 }
 
 // GetStatus return the status from the status object.
@@ -276,4 +268,17 @@ func (bs *BackupStatus) Units() []IdentifiedUnitStatus {
 // FailedUnits returns all units of the backup in state UnitStateFailed or UnitStateMissing.
 func (bs *BackupStatus) FailedUnits() []IdentifiedUnitStatus {
 	return failedUnits(bs.Units())
+}
+
+// GetTruncatedName returns a shortened but still unique and reproducible name that fits into the 63-character limit of Kubernetes labels.
+func GetTruncatedName(name string) string {
+	if len(name) <= maxLabelValueLength {
+		return name
+	}
+
+	hasher := fnv.New32a()
+	_, _ = hasher.Write([]byte(name)) // hash.Hash.Write never returns an error
+	suffix := fmt.Sprintf("%x", hasher.Sum32())
+
+	return fmt.Sprintf("%s-%s", name[:maxLabelValueLength-backupNameHashLength-1], suffix)
 }
