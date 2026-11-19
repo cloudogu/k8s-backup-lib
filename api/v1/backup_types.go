@@ -2,6 +2,7 @@ package v1
 
 import (
 	"fmt"
+	"hash/fnv"
 	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -55,6 +56,13 @@ const (
 	AppLabelValueCes       = "ces"
 	PartOfLabelKey         = "k8s.cloudogu.com/part-of"
 	PartOfLabelValueBackup = "backup"
+)
+
+const (
+	// maxLabelValueLength is the maximum length of a kubernetes label value.
+	maxLabelValueLength = 63
+	// backupNameHashLength is the number of hex characters of the hash which makes truncated backup names unique.
+	backupNameHashLength = 8
 )
 
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
@@ -210,6 +218,19 @@ func (b *Backup) GetNamespacedName() types.NamespacedName {
 		Namespace: b.Namespace,
 		Name:      b.Name,
 	}
+}
+
+// GetTruncatedName returns a shortened but still unique and reproducible name that fits into the 63-character limit of Kubernetes labels.
+func (b *Backup) GetTruncatedName() string {
+	if len(b.Name) <= maxLabelValueLength {
+		return b.Name
+	}
+
+	hasher := fnv.New32a()
+	_, _ = hasher.Write([]byte(b.Name)) // hash.Hash.Write never returns an error
+	suffix := fmt.Sprintf("%x", hasher.Sum32())
+
+	return fmt.Sprintf("%s-%s", b.Name[:maxLabelValueLength-backupNameHashLength-1], suffix)
 }
 
 // GetStatus return the status from the status object.
