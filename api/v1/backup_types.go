@@ -135,14 +135,11 @@ type BackupStatus struct {
 	// +listMapKey=name
 	// +optional
 	Dogus []DoguUnitStatus `json:"dogus,omitempty"`
-	// Components contains the components that are part of the misc unit at the time of the backup.
-	// +listType=map
-	// +listMapKey=name
+	// Components describes the unit containing the backup of components.
+	// Backupable resources of components are PVCs, ConfigMaps, Secrets, and ServiceAccountProducer-CRs
+	// with the label k8s.cloudogu.com/backup-scope.
 	// +optional
-	Components []ComponentStatus `json:"components,omitempty"`
-	// Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
-	// +optional
-	Misc *UnitStatus `json:"misc,omitempty"`
+	Components *ComponentsUnitStatus `json:"components,omitempty"`
 }
 
 // +genclient
@@ -256,10 +253,10 @@ func (bs *BackupStatus) Units() []IdentifiedUnitStatus {
 			UnitStatus: dogu.UnitStatus,
 		})
 	}
-	if bs.Misc != nil {
+	if bs.Components != nil {
 		units = append(units, IdentifiedUnitStatus{
-			Type:       UnitTypeMisc,
-			UnitStatus: *bs.Misc,
+			Type:       UnitTypeComponents,
+			UnitStatus: bs.Components.UnitStatus,
 		})
 	}
 	return units

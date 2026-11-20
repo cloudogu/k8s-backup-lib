@@ -8,6 +8,7 @@ metadata:
   labels:
     app: ces
     app.kubernetes.io/name: k8s-backup-operator-crd
+    k8s.cloudogu.com/part-of: backup
 spec:
   group: k8s.cloudogu.com
   names:

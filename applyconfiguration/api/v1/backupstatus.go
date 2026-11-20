@@ -39,10 +39,10 @@ type BackupStatusApplyConfiguration struct {
 	V2Dogus *V2DogusUnitStatusApplyConfiguration `json:"v2Dogus,omitempty"`
 	// Dogus describes the units of the V3 dogus.
 	Dogus []DoguUnitStatusApplyConfiguration `json:"dogus,omitempty"`
-	// Components contains the components that are part of the misc unit at the time of the backup.
-	Components []ComponentStatusApplyConfiguration `json:"components,omitempty"`
-	// Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
-	Misc *UnitStatusApplyConfiguration `json:"misc,omitempty"`
+	// Components describes the unit containing the backup of components.
+	// Backupable resources of components are PVCs, ConfigMaps, Secrets, and ServiceAccountProducer-CRs
+	// with the label k8s.cloudogu.com/backup-scope.
+	Components *ComponentsUnitStatusApplyConfiguration `json:"components,omitempty"`
 }
 
 // BackupStatusApplyConfiguration constructs a declarative configuration of the BackupStatus type for use with
@@ -141,23 +141,10 @@ func (b *BackupStatusApplyConfiguration) WithDogus(values ...*DoguUnitStatusAppl
 	return b
 }
 
-// WithComponents adds the given value to the Components field in the declarative configuration
-// and returns the receiver, so that objects can be build by chaining "With" function invocations.
-// If called multiple times, values provided by each call will be appended to the Components field.
-func (b *BackupStatusApplyConfiguration) WithComponents(values ...*ComponentStatusApplyConfiguration) *BackupStatusApplyConfiguration {
-	for i := range values {
-		if values[i] == nil {
-			panic("nil value passed to WithComponents")
-		}
-		b.Components = append(b.Components, *values[i])
-	}
-	return b
-}
-
-// WithMisc sets the Misc field in the declarative configuration to the given value
+// WithComponents sets the Components field in the declarative configuration to the given value
 // and returns the receiver, so that objects can be built by chaining "With" function invocations.
-// If called multiple times, the Misc field is set to the value of the last call.
-func (b *BackupStatusApplyConfiguration) WithMisc(value *UnitStatusApplyConfiguration) *BackupStatusApplyConfiguration {
-	b.Misc = value
+// If called multiple times, the Components field is set to the value of the last call.
+func (b *BackupStatusApplyConfiguration) WithComponents(value *ComponentsUnitStatusApplyConfiguration) *BackupStatusApplyConfiguration {
+	b.Components = value
 	return b
 }

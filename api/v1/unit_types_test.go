@@ -26,7 +26,7 @@ func TestBackupStatus_Units(t *testing.T) {
 				{Name: "scm", Version: "3.0.0-1", State: UnitStateFailed, Reason: "ProviderBackupFailed"},
 				{Name: "jenkins", Version: "2.0.0-1", UnitStatus: UnitStatus{}},
 			},
-			Misc: &UnitStatus{State: UnitStateSucceeded, ProviderRef: &ProviderRef{Name: "backup-misc"}},
+			Components: &ComponentsUnitStatus{State: UnitStateSucceeded, ProviderRef: &ProviderRef{Name: "backup-misc"}},
 		}
 
 		expected := []IdentifiedUnitStatus{
@@ -34,7 +34,7 @@ func TestBackupStatus_Units(t *testing.T) {
 			{Type: UnitTypeDoguV2, UnitStatus: status.V2Dogus.UnitStatus},
 			{Type: UnitTypeDogu, Name: "scm", UnitStatus: status.Dogus[0].UnitStatus},
 			{Type: UnitTypeDogu, Name: "jenkins", UnitStatus: status.Dogus[1].UnitStatus},
-			{Type: UnitTypeMisc, UnitStatus: *status.Misc},
+			{Type: UnitTypeComponents, UnitStatus: status.Components.UnitStatus},
 		}
 		assert.Equal(t, expected, status.Units())
 	})
@@ -61,7 +61,7 @@ func TestBackupStatus_FailedUnits(t *testing.T) {
 
 func TestRestoreStatus_FailedUnits(t *testing.T) {
 	status := RestoreStatus{Units: []IdentifiedUnitStatus{
-		{Type: UnitTypeMisc, State: UnitStateSucceeded},
+		{Type: UnitTypeComponents, State: UnitStateSucceeded},
 		{Type: UnitTypeDogu, Name: "scm", State: UnitStateFailed},
 		{Type: UnitTypeDoguV2, State: UnitStateMissing},
 	}}
