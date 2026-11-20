@@ -96,7 +96,7 @@ type BackupSpec struct {
 	ExcludedComponents []string `json:"excludedComponents,omitempty"`
 	// Options defines which units are backed up and how failed units are handled.
 	// +optional
-	Options UnitOptions `json:"options,omitempty"`
+	Options *UnitOptions `json:"options,omitempty"`
 }
 
 // BackupStatus defines the observed state of Backup
