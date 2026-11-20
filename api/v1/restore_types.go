@@ -48,7 +48,7 @@ type RestoreSpec struct {
 	ExcludedComponents []string `json:"excludedComponents,omitempty"`
 	// Options defines which units are restored and how failed units are handled.
 	// +optional
-	Options UnitOptions `json:"options,omitempty"`
+	Options *UnitOptions `json:"options,omitempty"`
 }
 
 // RestoreStatus defines the observed state of Restore

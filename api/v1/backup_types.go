@@ -2,6 +2,7 @@ package v1
 
 import (
 	"fmt"
+	"hash/fnv"
 	"time"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -57,6 +58,13 @@ const (
 	PartOfLabelValueBackup = "backup"
 )
 
+const (
+	// maxLabelValueLength is the maximum length of a kubernetes label value.
+	maxLabelValueLength = 63
+	// backupNameHashLength is the number of hex characters of the hash which makes truncated backup names unique.
+	backupNameHashLength = 8
+)
+
 // NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // BackupSpec defines the desired state of Backup
@@ -88,7 +96,7 @@ type BackupSpec struct {
 	ExcludedComponents []string `json:"excludedComponents,omitempty"`
 	// Options defines which units are backed up and how failed units are handled.
 	// +optional
-	Options UnitOptions `json:"options,omitempty"`
+	Options *UnitOptions `json:"options,omitempty"`
 }
 
 // BackupStatus defines the observed state of Backup
@@ -127,14 +135,11 @@ type BackupStatus struct {
 	// +listMapKey=name
 	// +optional
 	Dogus []DoguUnitStatus `json:"dogus,omitempty"`
-	// Components contains the components that are part of the misc unit at the time of the backup.
-	// +listType=map
-	// +listMapKey=name
+	// Components describes the unit containing the backup of components.
+	// Backupable resources of components are PVCs, ConfigMaps, Secrets, and ServiceAccountProducer-CRs
+	// with the label k8s.cloudogu.com/backup-scope.
 	// +optional
-	Components []ComponentStatus `json:"components,omitempty"`
-	// Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
-	// +optional
-	Misc *UnitStatus `json:"misc,omitempty"`
+	Components *ComponentsUnitStatus `json:"components,omitempty"`
 }
 
 // +genclient
@@ -212,6 +217,11 @@ func (b *Backup) GetNamespacedName() types.NamespacedName {
 	}
 }
 
+// GetTruncatedName returns a shortened but still unique and reproducible backup name that fits into the 63-character limit of Kubernetes labels.
+func (b *Backup) GetTruncatedName() string {
+	return GetTruncatedName(b.Name)
+}
+
 // GetStatus return the status from the status object.
 func (bs *BackupStatus) GetStatus() string {
 	return bs.Status
@@ -243,10 +253,10 @@ func (bs *BackupStatus) Units() []IdentifiedUnitStatus {
 			UnitStatus: dogu.UnitStatus,
 		})
 	}
-	if bs.Misc != nil {
+	if bs.Components != nil {
 		units = append(units, IdentifiedUnitStatus{
-			Type:       UnitTypeMisc,
-			UnitStatus: *bs.Misc,
+			Type:       UnitTypeComponents,
+			UnitStatus: bs.Components.UnitStatus,
 		})
 	}
 	return units
@@ -255,4 +265,17 @@ func (bs *BackupStatus) Units() []IdentifiedUnitStatus {
 // FailedUnits returns all units of the backup in state UnitStateFailed or UnitStateMissing.
 func (bs *BackupStatus) FailedUnits() []IdentifiedUnitStatus {
 	return failedUnits(bs.Units())
+}
+
+// GetTruncatedName returns a shortened but still unique and reproducible name that fits into the 63-character limit of Kubernetes labels.
+func GetTruncatedName(name string) string {
+	if len(name) <= maxLabelValueLength {
+		return name
+	}
+
+	hasher := fnv.New32a()
+	_, _ = hasher.Write([]byte(name)) // hash.Hash.Write never returns an error
+	suffix := fmt.Sprintf("%x", hasher.Sum32())
+
+	return fmt.Sprintf("%s-%s", name[:maxLabelValueLength-backupNameHashLength-1], suffix)
 }

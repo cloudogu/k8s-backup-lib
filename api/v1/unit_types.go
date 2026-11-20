@@ -2,7 +2,7 @@ package v1
 
 // Labels on provider backups (e.g. Velero backups) which assign them to a backup unit and to the Cloudogu backup.
 const (
-	// BackupLabelKey contains the name of the Cloudogu backup which the provider backup belongs to.
+	// BackupLabelKey contains the truncated name of the Cloudogu backup which the provider backup belongs to.
 	BackupLabelKey = "k8s.cloudogu.com/backup"
 	// BackupTypeLabelKey contains the UnitType of the provider backup.
 	BackupTypeLabelKey = "k8s.cloudogu.com/backup-type"
@@ -22,6 +22,8 @@ const (
 
 // Annotations on provider backups.
 const (
+	// BackupAnnotationKey contains the name of the Cloudogu backup which the provider backup belongs to.
+	BackupAnnotationKey = BackupLabelKey
 	// InstalledDogusV2AnnotationKey contains the serialized list of V2 dogus with their versions in the V2 unit.
 	// It is set on all provider backups of the Cloudogu backup.
 	InstalledDogusV2AnnotationKey = "k8s.cloudogu.com/backup-installed-dogus-v2"
@@ -39,7 +41,7 @@ const (
 	// DomainAnnotationKey contains the domain of the system at the time of the backup.
 	// It is only set on the provider backup of the global-config unit.
 	DomainAnnotationKey = "k8s.cloudogu.com/backup-domain"
-	// ComponentsAnnotationKey contains the serialized list of components with name and version that are part of the misc unit.
+	// ComponentsAnnotationKey contains the serialized list of components with name and version that are part of the components unit.
 	ComponentsAnnotationKey = "k8s.cloudogu.com/backup-components"
 )
 
@@ -53,8 +55,8 @@ const (
 	UnitTypeDoguV2 UnitType = "doguv2"
 	// UnitTypeGlobalConfig contains the global config.
 	UnitTypeGlobalConfig UnitType = "global-config"
-	// UnitTypeMisc contains all resources with the label k8s.cloudogu.com/backup-scope which belong to no other unit.
-	UnitTypeMisc UnitType = "misc"
+	// UnitTypeComponents contains specific component resources with the label k8s.cloudogu.com/backup-scope.
+	UnitTypeComponents UnitType = "components"
 )
 
 // BackupCoverage defines whether a backup contains the whole system.
@@ -73,8 +75,6 @@ type UnitOptions struct {
 	IgnoreGlobalConfig bool `json:"ignoreGlobalConfig,omitempty"`
 	// IgnoreV2Dogus excludes the unit containing all V2 dogus.
 	IgnoreV2Dogus bool `json:"ignoreV2Dogus,omitempty"`
-	// IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
-	IgnoreMisc bool `json:"ignoreMisc,omitempty"`
 }
 
 // UnitIdentifier identifies a unit of a Cloudogu backup. A list of it is serialized into UnitsAnnotationKey.
@@ -162,8 +162,18 @@ type V2DogusUnitStatus struct {
 	Dogus []DoguVersion `json:"dogus,omitempty"`
 }
 
-// ComponentStatus describes a component at the time of the backup.
-type ComponentStatus struct {
+// ComponentsUnitStatus describes the unit containing the backup of components.
+type ComponentsUnitStatus struct {
+	UnitStatus `json:",inline"`
+	// Components contains the components that are part of the unit at the time of the backup.
+	// +listType=map
+	// +listMapKey=name
+	// +optional
+	Components []ComponentVersion `json:"components,omitempty"`
+}
+
+// ComponentVersion identifies a component in a specific version.
+type ComponentVersion struct {
 	// Name of the component.
 	Name string `json:"name"`
 	// Version of the component.

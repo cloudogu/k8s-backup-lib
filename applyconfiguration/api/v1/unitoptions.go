@@ -14,8 +14,6 @@ type UnitOptionsApplyConfiguration struct {
 	IgnoreGlobalConfig *bool `json:"ignoreGlobalConfig,omitempty"`
 	// IgnoreV2Dogus excludes the unit containing all V2 dogus.
 	IgnoreV2Dogus *bool `json:"ignoreV2Dogus,omitempty"`
-	// IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
-	IgnoreMisc *bool `json:"ignoreMisc,omitempty"`
 }
 
 // UnitOptionsApplyConfiguration constructs a declarative configuration of the UnitOptions type for use with
@@ -37,13 +35,5 @@ func (b *UnitOptionsApplyConfiguration) WithIgnoreGlobalConfig(value bool) *Unit
 // If called multiple times, the IgnoreV2Dogus field is set to the value of the last call.
 func (b *UnitOptionsApplyConfiguration) WithIgnoreV2Dogus(value bool) *UnitOptionsApplyConfiguration {
 	b.IgnoreV2Dogus = &value
-	return b
-}
-
-// WithIgnoreMisc sets the IgnoreMisc field in the declarative configuration to the given value
-// and returns the receiver, so that objects can be built by chaining "With" function invocations.
-// If called multiple times, the IgnoreMisc field is set to the value of the last call.
-func (b *UnitOptionsApplyConfiguration) WithIgnoreMisc(value bool) *UnitOptionsApplyConfiguration {
-	b.IgnoreMisc = &value
 	return b
 }

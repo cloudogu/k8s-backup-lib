@@ -102,9 +102,6 @@ spec:
                     ignoreGlobalConfig:
                       description: IgnoreGlobalConfig excludes the global-config unit.
                       type: boolean
-                    ignoreMisc:
-                      description: IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
-                      type: boolean
                     ignoreV2Dogus:
                       description: IgnoreV2Dogus excludes the unit containing all V2 dogus.
                       type: boolean
@@ -143,24 +140,55 @@ spec:
                   format: date-time
                   type: string
                 components:
-                  description: Components contains the components that are part of the misc unit at the time of the backup.
-                  items:
-                    description: ComponentStatus describes a component at the time of the backup.
-                    properties:
-                      name:
-                        description: Name of the component.
-                        type: string
-                      version:
-                        description: Version of the component.
-                        type: string
-                    required:
-                      - name
-                      - version
-                    type: object
-                  type: array
-                  x-kubernetes-list-map-keys:
-                    - name
-                  x-kubernetes-list-type: map
+                  description: |-
+                    Components describes the unit containing the backup of components.
+                    Backupable resources of components are PVCs, ConfigMaps, Secrets, and ServiceAccountProducer-CRs
+                    with the label k8s.cloudogu.com/backup-scope.
+                  properties:
+                    components:
+                      description: Components contains the components that are part of the unit at the time of the backup.
+                      items:
+                        description: ComponentVersion identifies a component in a specific version.
+                        properties:
+                          name:
+                            description: Name of the component.
+                            type: string
+                          version:
+                            description: Version of the component.
+                            type: string
+                        required:
+                          - name
+                          - version
+                        type: object
+                      type: array
+                      x-kubernetes-list-map-keys:
+                        - name
+                      x-kubernetes-list-type: map
+                    message:
+                      description: Message contains a human-readable explanation of the state.
+                      type: string
+                    providerRef:
+                      description: |-
+                        ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
+                        It is set for the states Succeeded and Failed and empty for the state Missing.
+                      properties:
+                        name:
+                          description: Name of the provider object.
+                          type: string
+                      required:
+                        - name
+                      type: object
+                    reason:
+                      description: Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
+                      type: string
+                    state:
+                      description: State of the unit. It is empty as long as the unit has no terminal result.
+                      enum:
+                        - Succeeded
+                        - Failed
+                        - Missing
+                      type: string
+                  type: object
                 conditions:
                   description: Conditions represent the latest available observations of the Backup's state.
                   items:
@@ -299,34 +327,6 @@ spec:
                   required:
                     - domain
                     - fqdn
-                  type: object
-                misc:
-                  description: Misc describes the unit containing resources with the label k8s.cloudogu.com/backup-scope.
-                  properties:
-                    message:
-                      description: Message contains a human-readable explanation of the state.
-                      type: string
-                    providerRef:
-                      description: |-
-                        ProviderRef references the provider object of the unit (e.g. a Velero backup or restore).
-                        It is set for the states Succeeded and Failed and empty for the state Missing.
-                      properties:
-                        name:
-                          description: Name of the provider object.
-                          type: string
-                      required:
-                        - name
-                      type: object
-                    reason:
-                      description: Reason contains a programmatic identifier in CamelCase for the state, e.g. ProviderBackupFailed.
-                      type: string
-                    state:
-                      description: State of the unit. It is empty as long as the unit has no terminal result.
-                      enum:
-                        - Succeeded
-                        - Failed
-                        - Missing
-                      type: string
                   type: object
                 requeueTimeNanos:
                   description: RequeueTimeNanos contains the time in nanoseconds to wait until the next requeue.

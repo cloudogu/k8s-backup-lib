@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- [#16] Method to truncate backup names with a hash suffix.
+  This allows us to fit backup names into Kubernetes label values while avoiding collisions.
+- [#16] Constant for backup annotation key
+
+### Changed
+- [#18] UnitOptions to pointer type
+- [#20] Misc becomes the Components unit
+
+### Removed
+- [#19] IgnoreMisc flag in UnitOptions
 
 ## [v1.11.0] - 2026-11-12
 ### Changed
