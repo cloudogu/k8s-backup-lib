@@ -2,7 +2,7 @@ package v1
 
 // Labels on provider backups (e.g. Velero backups) which assign them to a backup unit and to the Cloudogu backup.
 const (
-	// BackupLabelKey contains the name of the Cloudogu backup which the provider backup belongs to.
+	// BackupLabelKey contains the truncated name of the Cloudogu backup which the provider backup belongs to.
 	BackupLabelKey = "k8s.cloudogu.com/backup"
 	// BackupTypeLabelKey contains the UnitType of the provider backup.
 	BackupTypeLabelKey = "k8s.cloudogu.com/backup-type"
@@ -22,6 +22,8 @@ const (
 
 // Annotations on provider backups.
 const (
+	// BackupAnnotationKey contains the name of the Cloudogu backup which the provider backup belongs to.
+	BackupAnnotationKey = "k8s.cloudogu.com/backup"
 	// InstalledDogusV2AnnotationKey contains the serialized list of V2 dogus with their versions in the V2 unit.
 	// It is set on all provider backups of the Cloudogu backup.
 	InstalledDogusV2AnnotationKey = "k8s.cloudogu.com/backup-installed-dogus-v2"
