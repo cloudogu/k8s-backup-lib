@@ -73,8 +73,6 @@ type UnitOptions struct {
 	IgnoreGlobalConfig bool `json:"ignoreGlobalConfig,omitempty"`
 	// IgnoreV2Dogus excludes the unit containing all V2 dogus.
 	IgnoreV2Dogus bool `json:"ignoreV2Dogus,omitempty"`
-	// IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
-	IgnoreMisc bool `json:"ignoreMisc,omitempty"`
 }
 
 // UnitIdentifier identifies a unit of a Cloudogu backup. A list of it is serialized into UnitsAnnotationKey.
