@@ -31,8 +31,10 @@ func ForKind(kind schema.GroupVersionKind) interface{} {
 		return &apiv1.BackupSpecApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("BackupStatus"):
 		return &apiv1.BackupStatusApplyConfiguration{}
-	case v1.SchemeGroupVersion.WithKind("ComponentStatus"):
-		return &apiv1.ComponentStatusApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("ComponentsUnitStatus"):
+		return &apiv1.ComponentsUnitStatusApplyConfiguration{}
+	case v1.SchemeGroupVersion.WithKind("ComponentVersion"):
+		return &apiv1.ComponentVersionApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("DoguUnitStatus"):
 		return &apiv1.DoguUnitStatusApplyConfiguration{}
 	case v1.SchemeGroupVersion.WithKind("DoguVersion"):

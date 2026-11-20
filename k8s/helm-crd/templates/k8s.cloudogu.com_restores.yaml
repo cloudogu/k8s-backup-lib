@@ -97,9 +97,6 @@ spec:
                     ignoreGlobalConfig:
                       description: IgnoreGlobalConfig excludes the global-config unit.
                       type: boolean
-                    ignoreMisc:
-                      description: IgnoreMisc excludes the misc unit containing resources with the label k8s.cloudogu.com/backup-scope.
-                      type: boolean
                     ignoreV2Dogus:
                       description: IgnoreV2Dogus excludes the unit containing all V2 dogus.
                       type: boolean

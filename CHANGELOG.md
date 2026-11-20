@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.12.0] - 2026-11-20
+### Added
+- [#16] Method to truncate backup names with a hash suffix.
+  This allows us to fit backup names into Kubernetes label values while avoiding collisions.
+- [#16] Constant for backup annotation key
+
+### Changed
+- [#18] UnitOptions to pointer type
+- [#20] Misc becomes the Components unit
+
+### Removed
+- [#19] IgnoreMisc flag in UnitOptions
+
 ## [v1.11.0] - 2026-11-12
 ### Changed
 - [#14] Update controller-gen to `v0.23.0` to generate OpenAPI schema and helper functions for ssa.

@@ -133,12 +133,7 @@ var schemaYAML = typed.YAMLObject(`types:
         namedType: io.k8s.apimachinery.pkg.apis.meta.v1.Time
     - name: components
       type:
-        list:
-          elementType:
-            namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ComponentStatus
-          elementRelationship: associative
-          keys:
-          - name
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ComponentsUnitStatus
     - name: conditions
       type:
         list:
@@ -158,9 +153,6 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: globalConfig
       type:
         namedType: com.github.cloudogu.k8s-backup-lib.api.v1.GlobalConfigStatus
-    - name: misc
-      type:
-        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitStatus
     - name: requeueTimeNanos
       type:
         namedType: Duration.time
@@ -173,7 +165,7 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: v2Dogus
       type:
         namedType: com.github.cloudogu.k8s-backup-lib.api.v1.V2DogusUnitStatus
-- name: com.github.cloudogu.k8s-backup-lib.api.v1.ComponentStatus
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.ComponentVersion
   map:
     fields:
     - name: name
@@ -182,6 +174,29 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: version
       type:
         scalar: string
+- name: com.github.cloudogu.k8s-backup-lib.api.v1.ComponentsUnitStatus
+  map:
+    fields:
+    - name: components
+      type:
+        list:
+          elementType:
+            namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ComponentVersion
+          elementRelationship: associative
+          keys:
+          - name
+    - name: message
+      type:
+        scalar: string
+    - name: providerRef
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ProviderRef
+    - name: reason
+      type:
+        scalar: string
+    - name: state
+      type:
+        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
 - name: com.github.cloudogu.k8s-backup-lib.api.v1.DoguUnitStatus
   map:
     fields:
@@ -333,29 +348,11 @@ var schemaYAML = typed.YAMLObject(`types:
     - name: ignoreGlobalConfig
       type:
         scalar: boolean
-    - name: ignoreMisc
-      type:
-        scalar: boolean
     - name: ignoreV2Dogus
       type:
         scalar: boolean
 - name: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
   scalar: string
-- name: com.github.cloudogu.k8s-backup-lib.api.v1.UnitStatus
-  map:
-    fields:
-    - name: message
-      type:
-        scalar: string
-    - name: providerRef
-      type:
-        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.ProviderRef
-    - name: reason
-      type:
-        scalar: string
-    - name: state
-      type:
-        namedType: com.github.cloudogu.k8s-backup-lib.api.v1.UnitState
 - name: com.github.cloudogu.k8s-backup-lib.api.v1.UnitType
   scalar: string
 - name: com.github.cloudogu.k8s-backup-lib.api.v1.V2DogusUnitStatus
