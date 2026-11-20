@@ -23,7 +23,7 @@ const (
 // Annotations on provider backups.
 const (
 	// BackupAnnotationKey contains the name of the Cloudogu backup which the provider backup belongs to.
-	BackupAnnotationKey = "k8s.cloudogu.com/backup"
+	BackupAnnotationKey = BackupLabelKey
 	// InstalledDogusV2AnnotationKey contains the serialized list of V2 dogus with their versions in the V2 unit.
 	// It is set on all provider backups of the Cloudogu backup.
 	InstalledDogusV2AnnotationKey = "k8s.cloudogu.com/backup-installed-dogus-v2"
