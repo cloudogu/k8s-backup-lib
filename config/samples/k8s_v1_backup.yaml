@@ -17,4 +17,3 @@ spec:
   options:
     ignoreGlobalConfig: false
     ignoreV2Dogus: false
-    ignoreMisc: true

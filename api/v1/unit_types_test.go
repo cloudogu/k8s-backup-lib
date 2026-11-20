@@ -26,7 +26,7 @@ func TestBackupStatus_Units(t *testing.T) {
 				{Name: "scm", Version: "3.0.0-1", State: UnitStateFailed, Reason: "ProviderBackupFailed"},
 				{Name: "jenkins", Version: "2.0.0-1", UnitStatus: UnitStatus{}},
 			},
-			Components: &ComponentsUnitStatus{State: UnitStateSucceeded, ProviderRef: &ProviderRef{Name: "backup-misc"}},
+			Components: &ComponentsUnitStatus{State: UnitStateSucceeded, ProviderRef: &ProviderRef{Name: "backup-components"}},
 		}
 
 		expected := []IdentifiedUnitStatus{
